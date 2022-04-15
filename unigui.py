@@ -72,6 +72,13 @@ class UniGui(displayio.Group):
         self.append(circle)
         self.append(triangle)
 
+    def set_icon(self):
+        icon = displayio.OnDiskBitmap('images/video-card-32.bmp')
+        icon_tg = displayio.TileGrid(icon, pixel_shader=icon.pixel_shader)
+        icon_tg.x = 32
+        icon_tg.y = 32
+        self.append(icon_tg)
+
     # Show the GUI on the display
     def update(self, display):
         display.show(self)
