@@ -44,6 +44,8 @@ class PygameDisplay(displayio.Display):
         update without calls to this.)
         """
 
+        event_return = None
+
         # pylint: disable=no-member, unused-argument)
         for event in pygame.event.get():
             # only do something if the event is of type QUIT
@@ -51,6 +53,8 @@ class PygameDisplay(displayio.Display):
                 self.running = False
                 time.sleep(0.1)
                 pygame.quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                event_return = 1
 
         if self.running:
             self._subrectangles = []
@@ -71,6 +75,8 @@ class PygameDisplay(displayio.Display):
 
             for area in self._subrectangles:
                 self._refresh_display_area(area)
+
+        return event_return
 
     def _refresh_display_area(self, rectangle):
         """Loop through dirty rectangles and redraw that area."""

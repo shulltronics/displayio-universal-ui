@@ -2,3 +2,4 @@ git+https://github.com/shulltronics/Adafruit_Blinka.git@main#egg=adafruit_blinka
 git+https://github.com/shulltronics/Adafruit_Blinka_Displayio.git@main#egg=adafruit_blinka_displayio
 adafruit_circuitpython_display_text
 adafruit_circuitpython_bitmap_font
+adafruit_circuitpython_display_shapes

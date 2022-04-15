@@ -1,3 +1,4 @@
-.env/*
-.windows-venv/*
+.env/
+.windows-venv/
+.windows-venv-3.10/
 __pycache__/
