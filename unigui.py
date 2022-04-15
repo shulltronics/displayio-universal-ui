@@ -83,7 +83,17 @@ class UniGui(displayio.Group):
     def update(self, display):
         display.show(self)
 
+
+# A Widget has a name, (x, y) location (upper left corner),
+# and a (w, h) size in pixels.
+# I'm going to start exploring layouts with 32px increments
 class Widget():
+
+    _active = False
+    (_x, _y) = (0, 0)
+    (_w, _h) = (0, 0)
 
     def __init__(self):
         self._active = True
+        (_x, _y) = (0, 0)
+        (_w, _h) = (32, 32)
