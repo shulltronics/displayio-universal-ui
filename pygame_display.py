@@ -27,10 +27,11 @@ class PygameDisplay(displayio.Display):
         pygame.display.set_caption("Shulltronics Displayio PyGame Testing")
         self._pygame_screen = pygame.display.set_mode((self._width, self._height))
     
-    def _refresh(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
+    # def _refresh(self):
+    #     for event in pygame.event.get():
+    #         if event.type == pygame.QUIT:
+    #             sys.exit()
+
 
     def refresh(self, *, target_frames_per_second=60, minimum_frames_per_second=1):
         """
@@ -43,18 +44,6 @@ class PygameDisplay(displayio.Display):
         When auto refresh is on, updates the display immediately. (The display will also
         update without calls to this.)
         """
-
-        event_return = None
-
-        # pylint: disable=no-member, unused-argument)
-        for event in pygame.event.get():
-            # only do something if the event is of type QUIT
-            if event.type == pygame.QUIT:
-                self.running = False
-                time.sleep(0.1)
-                pygame.quit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                event_return = 1
 
         if self.running:
             self._subrectangles = []
@@ -76,7 +65,6 @@ class PygameDisplay(displayio.Display):
             for area in self._subrectangles:
                 self._refresh_display_area(area)
 
-        return event_return
 
     def _refresh_display_area(self, rectangle):
         """Loop through dirty rectangles and redraw that area."""
@@ -92,3 +80,19 @@ class PygameDisplay(displayio.Display):
         # print("({}, {})".format(img.width, img.height))
         self._pygame_screen.blit(pygame_surface, (rectangle.x1, rectangle.y1))
         pygame.display.flip()
+
+    def get_mouse_clicks(self):
+
+        event_return = None
+        # pylint: disable=no-member, unused-argument)
+        for event in pygame.event.get():
+            # filter based on event:
+            if event.type == pygame.QUIT:
+                self.running = False
+                time.sleep(0.1)
+                pygame.quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                print("yo!")
+                event_return = pygame.mouse.get_pos()
+
+        return event_return
