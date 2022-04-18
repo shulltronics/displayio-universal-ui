@@ -10,6 +10,7 @@ display  = PygameDisplay(WIDTH*SCALE_FACTOR, HEIGHT*SCALE_FACTOR)
 
 gui.update(display)
 
+message = "hello sweet, oh bittersweet world..."
 titles = ["hello", "carsten"]
 border = True
 i = 0
@@ -20,11 +21,12 @@ while(1):
     if click is not None:
         print(click)
         border = not border
-        gui.set_border(border)
-        gui.set_main_area()
+        #gui.set_border(border)
+        #gui.set_main_area()
         i += 1
         try:
             gui.get_widget("toolbar").set_value(titles[i%2])
+            gui.get_widget("messages").set_value(message[0:(i%len(message))])
         except:
             print("Oops! couldn't find widget")
     else:

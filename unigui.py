@@ -158,7 +158,8 @@ class Widget(displayio.Group):
 class TextWidget(Widget):
 
     SMALL_FONT = "fonts/VCROSDMono-14.bdf"
-    LARGE_FONT = "fonts/Silom-Bold-24.bdf"
+    LARGE_FONT = "fonts/SNES-Italic-24.bdf"
+                 #"fonts/Silom-Bold-24.bdf"
 
     def __init__(self, name, x, y, width, height, font_size=LARGE_FONT):
         super().__init__(name, x, y, width, height)
