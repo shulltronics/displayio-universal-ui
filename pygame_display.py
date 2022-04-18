@@ -92,7 +92,6 @@ class PygameDisplay(displayio.Display):
                 time.sleep(0.1)
                 pygame.quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                print("yo!")
                 event_return = pygame.mouse.get_pos()
 
         return event_return
