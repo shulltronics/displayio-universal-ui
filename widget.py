@@ -1,6 +1,7 @@
 import displayio
 from adafruit_bitmap_font import bitmap_font
 from adafruit_display_text import label
+import adafruit_imageload
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_shapes.triangle import Triangle
 from adafruit_display_shapes.circle import Circle
@@ -170,7 +171,7 @@ class TextWidget(Widget):
 
     def __init__(self, name, x, y, width, height, font_size=LARGE_FONT):
         super().__init__(name, x, y, width, height)
-        self.value     = "default"
+        self.value     = ""
         self.font_file = font_size
         self.color     = VSCode.ORANGE
         font = bitmap_font.load_font(self.font_file)
@@ -186,7 +187,7 @@ class TextWidget(Widget):
             return None
 
     # sets the text to display
-    def set_value(self, value, h_justification='left', v_justification='bottom'):
+    def set_value(self, value, h_justification='left', v_justification='top'):
         (label_idx, label) = self.get_label()
         if label:
             self.value = value
@@ -220,6 +221,33 @@ class TextWidget(Widget):
         self.color = color
         self.label.color = color
 
+class IconWidget(Widget):
+
+    def __init__(self, name, x, y, width=32, height=32):
+        super().__init__(name, x, y, width, height)
+        self.bm, self.icon_palette = adafruit_imageload.load(
+            "images/128x32/px_icons.bmp",
+            bitmap=displayio.Bitmap,
+            palette=displayio.Palette,
+        )
+        # Setup the icon palette to the color we want, making index 0 transparent
+        # Be sure when creating icons to make the background color be index 0
+        self.icon_palette.make_transparent(0)
+        self.icon_palette[1] = self.palette[3]
+        self.tg = displayio.TileGrid(
+            self.bm,
+            pixel_shader=self.icon_palette,
+            width=1,
+            height=1,
+            tile_width=32,
+            tile_height=32,
+            default_tile=2,
+        )
+        self.append(self.tg)
+    
+    def set_icon_index(self, idx=0):
+        self.tg[0] = idx
+
 """
 This widget draws some graphics
 """
@@ -240,7 +268,8 @@ class GraphicsWidget(Widget):
     # Draws a random triangle centered in the widget
     def set_main_area(self):
         (offset_x, offset_y) = (round(self.width/2), round(self.height/2))
-        r = min(offset_x, offset_y)
+        padding = 10 # TODO: paramatrize this value
+        r = min(offset_x, offset_y) - padding
         # Get three random angles around our circle:
         p0_angle = math.radians(randint(0, 360))
         p1_angle = math.radians(randint(0, 360))

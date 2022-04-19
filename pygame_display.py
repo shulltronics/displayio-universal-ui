@@ -95,3 +95,12 @@ class PygameDisplay(displayio.Display):
                 event_return = pygame.mouse.get_pos()
 
         return event_return
+
+    def quit(self):
+        """
+        Close the program!
+        """
+        print("Closing the program... goodbye!")
+        self.running = False
+        time.sleep(0.1)
+        pygame.quit()
