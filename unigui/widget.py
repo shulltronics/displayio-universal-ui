@@ -163,9 +163,9 @@ A Widget that displays a string nicely
 """
 class TextWidget(Widget):
 
-    SMALL_FONT = "fonts/6x12.bdf"
+    SMALL_FONT = "unigui/fonts/6x12.bdf"
                  #"fonts/VCROSDMono-14.bdf"
-    LARGE_FONT = "fonts/fipps-12pt.bdf"
+    LARGE_FONT = "unigui/fonts/fipps-12pt.bdf"
                  #"fonts/SNES-Italic-24.bdf"
                  #"fonts/Silom-Bold-24.bdf"
 
@@ -226,7 +226,7 @@ class IconWidget(Widget):
     def __init__(self, name, x, y, width=32, height=32):
         super().__init__(name, x, y, width, height)
         self.bm, self.icon_palette = adafruit_imageload.load(
-            "images/128x32/px_icons.bmp",
+            "unigui/images/128x32/px_icons.bmp",
             bitmap=displayio.Bitmap,
             palette=displayio.Palette,
         )

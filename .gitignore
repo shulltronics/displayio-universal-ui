@@ -1,6 +1,3 @@
-.env/
-.venv/
-.windows-venv/
-.windows-venv-3.10/
-.win-venv-test/
+.venv*
 __pycache__/
+examples/__pycache__/
