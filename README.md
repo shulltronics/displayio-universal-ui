@@ -1,6 +1,6 @@
 # UniGui
 
-[Screenshot](screenshot.png)
+![Screenshot](screenshot.png)
 
 ### A cross-platform user interface framework based on Adafruit Displayio
 
