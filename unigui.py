@@ -8,7 +8,7 @@
 import displayio
 from adafruit_bitmap_font import bitmap_font
 from adafruit_display_text import label
-from widget import Widget, Solarized
+from widget import Widget, Solarized, VSCode
 from random import randint
 import math
 
@@ -28,7 +28,7 @@ class UniGui(displayio.Group):
         self.y             = 0
         self.width         = width
         self.height        = height
-        self.palette       = Solarized.dark
+        self.palette       = VSCode.dark
         self.bg_color      = Solarized.BASE03
         self.text_color    = Solarized.BASE3
         self.widgets       = []

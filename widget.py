@@ -54,6 +54,33 @@ class Solarized():
     dark[6]  = MAGENTA
     dark[7]  = RED
 
+class VSCode():
+    BASE03  = 0x000000
+    BASE02  = 0x202020
+    BASE01  = 0x586E75
+    BASE00  = 0x657B83
+    BASE0   = 0x839496
+    BASE1   = 0x93A1A1
+    BASE2   = 0xEEE8D5
+    BASE3   = 0xFDF6E3
+    YELLOW  = 0xB58900
+    ORANGE  = 0xF38518
+    RED     = 0xFF0000
+    MAGENTA = 0xD33682
+    VIOLET  = 0xB267E6
+    BLUE    = 0x6796E6
+    CYAN    = 0x9CDCFE
+    GREEN   = 0x008000
+    dark    = displayio.Palette(8)
+    dark[0] = BASE03   # Background
+    dark[1] = BASE02   # Background highlights
+    dark[2] = BASE0    # Default text
+    dark[3] = BASE1    # Emphasized text
+    dark[4] = BLUE
+    dark[5] = CYAN
+    dark[6] = VIOLET
+    dark[7] = ORANGE
+
 """
 A Widget has a name, (x, y) location (upper left corner),
 and a (w, h) size in pixels.
@@ -64,7 +91,7 @@ class Widget(displayio.Group):
     def __init__(self, name, x, y, width, height):
         super().__init__()
         self.name          = name
-        self.palette       = Solarized.dark
+        self.palette       = VSCode.dark
         self.x             = x
         self.y             = y
         self.width         = width
@@ -92,7 +119,7 @@ class Widget(displayio.Group):
             print("Tried to get non-existant background tilegrid!")
             return None
 
-    def border_on(self, color_idx=4):
+    def border_on(self, color_idx=1):
         self.border = True
         bm = self.background_bm
         # get the index of the background tilegrid.
@@ -129,6 +156,9 @@ class Widget(displayio.Group):
 
 """
 A Widget that displays a string nicely
+    TODO: Add string justification feature (vertical and horizontal)
+    TODO: Add padding 
+    TODO: ability to wrap, cutoff, or scroll long text
 """
 class TextWidget(Widget):
 
@@ -142,17 +172,9 @@ class TextWidget(Widget):
         super().__init__(name, x, y, width, height)
         self.value     = "default"
         self.font_file = font_size
-        self.color     = Solarized.YELLOW
+        self.color     = VSCode.ORANGE
         font = bitmap_font.load_font(self.font_file)
-        text = label.Label(font, text=self.value, background=self.palette[1], color=self.color)
-        # setup some properties
-        text.base_alignment = True
-        text.anchor_point = (0, 0)
-        bb = text._bounding_box
-        (w, h) = (bb[2] - bb[0], bb[3] - bb[1])
-        (x, y) = (round(self.width/2) - round(w/2), self.y)
-        text.anchored_position = (x, y)
-        self.label = text ## Does this take up more memory?
+        self.label = label.Label(font, text=self.value, background=self.palette[1], color=self.color)
         self.append(self.label)
 
     def get_label(self):
@@ -164,18 +186,39 @@ class TextWidget(Widget):
             return None
 
     # sets the text to display
-    def set_value(self, value):
+    def set_value(self, value, h_justification='left', v_justification='bottom'):
         (label_idx, label) = self.get_label()
         if label:
             self.value = value
+            # Set the text value and then recalculate its position
             label.text = self.value
+            label.anchor_point = (0, 0)
+            bb = label._bounding_box
+            (w, h) = (bb[2] - bb[0], bb[3] - bb[1])
+            #TODO make this an object parameter
+            x_padding = y_padding = 3
+
+            if v_justification == 'top':
+                y = y_padding
+            elif v_justification == 'center':
+                y = round(self.height/2) - round(h/2)
+            elif v_justification == 'bottom':
+                y = self.height - h
+            
+            if h_justification == 'left':
+                x = x_padding
+            elif h_justification == 'center':
+                x = round(self.width/2) - round(w/2)
+            elif h_justification == 'right':
+                x = self.width - w - x_padding
+            
+            label.anchored_position = (x, y)
             self.insert(label_idx, label)
 
     # sets the text color
     def set_color(self, color):
         self.color = color
         self.label.color = color
-
 
 """
 This widget draws some graphics
@@ -205,7 +248,7 @@ class GraphicsWidget(Widget):
         (x0, y0) = (round(r*math.sin(p0_angle)) + offset_x, round(r*math.cos(p0_angle)) + offset_y)
         (x1, y1) = (round(r*math.sin(p1_angle)) + offset_x, round(r*math.cos(p1_angle)) + offset_y)
         (x2, y2) = (round(r*math.sin(p2_angle)) + offset_x, round(r*math.cos(p2_angle)) + offset_y)
-        triangle = Triangle(x0, y0, x1, y1, x2, y2, fill=self.palette[5], outline=self.palette[6])
+        triangle = Triangle(x0, y0, x1, y1, x2, y2, fill=self.palette[5], outline=VSCode.GREEN)
         # if the graphics already exist, update them
         if self.graphics:
             (graphics_idx, graphics) = self.get_graphics_group()

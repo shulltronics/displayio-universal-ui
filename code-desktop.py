@@ -8,6 +8,7 @@ print("starting...")
 
 display  = PygameDisplay(WIDTH*SCALE_FACTOR, HEIGHT*SCALE_FACTOR)
 msgs = gui.get_widget("messages")
+graphics = gui.get_widget("graphics")
 
 gui.update(display)
 
@@ -29,10 +30,11 @@ while(1):
 
     # timed functions go here
     t1 = time.time()
-    if (t1 - t0) > 0.05:
+    if (t1 - t0) > 0.15:
         t0 = t1
         j += 1
         msgs.set_value(message[0:(j%len(message))])
+        graphics.set_main_area()
 
 
    
