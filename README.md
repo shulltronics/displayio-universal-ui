@@ -11,6 +11,9 @@ There is also a class called `PygameDisplay` that uses pygame to create a `displ
 ## ToDo list
 - [ ] PR for Adafruit_Blinka and (possibly) PlatformDetect to allow usage on generic PC environments.
 - [ ] Overall improvement and features for widgets
+- [ ] Fix border_on function for generic widget so border is always drawn on top of other content (useful for viewing widget dimensions)
+- [ ] Map names (such as BASE_DARK, BASE_LIGHT, TEXT_DEFAULT, TEXT_HIGHLIGHT, etc) to the palette indices so that I can reference them independently of the color scheme
+- [ ] Figure out how to better handle clicks. For example, I might want a single widget to have multiple click regions. I don't think this is easy to do right now. Consider removing UniGui object totally and just making the Widget idea fully recursive.
 
 ## How to use this framework
 - Clone this repository to computer, then navigate into the project directory.

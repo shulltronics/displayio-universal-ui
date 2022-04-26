@@ -6,15 +6,15 @@ from unigui.pygame_display import PygameDisplay
 import time
 
 # Configuration constants
-WIDTH = 320
-HEIGHT = 240
+WIDTH = 128
+HEIGHT = 64
 SCALE_FACTOR = 2
 
 # The main UniGui object
 gui = UniGui(WIDTH, HEIGHT, scale=SCALE_FACTOR)
 
 # Setup a toolbar full width and 32 px high
-toolbar_widget = TextWidget("toolbar", 0, 0, WIDTH, HEIGHT, TextWidget.LARGE_FONT)
+toolbar_widget = TextWidget("toolbar", 0, 0, WIDTH, HEIGHT)
 gui.add_widget(toolbar_widget)
 
 display = PygameDisplay(WIDTH*SCALE_FACTOR, HEIGHT*SCALE_FACTOR)

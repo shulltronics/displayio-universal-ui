@@ -1,4 +1,5 @@
 import displayio
+import terminalio
 from adafruit_bitmap_font import bitmap_font
 from adafruit_display_text import label
 import adafruit_imageload
@@ -85,7 +86,11 @@ class VSCode():
 """
 A Widget has a name, (x, y) location (upper left corner),
 and a (w, h) size in pixels.
- A Widget is a displayio.Group, but it also can be attached to events and be updated
+ A Widget is a displayio.Group, and thus has the following properties:
+  - It can have a list of children
+  - etc..
+It also has the following properties:
+  - it can be attached to events and be updated
 """
 class Widget(displayio.Group):
 
@@ -93,6 +98,7 @@ class Widget(displayio.Group):
         super().__init__()
         self.name          = name
         self.palette       = VSCode.dark
+        self.palette.make_transparent(0)
         self.x             = x
         self.y             = y
         self.width         = width
@@ -100,8 +106,10 @@ class Widget(displayio.Group):
         self.border        = False
         self.background_bm = None   # this is the background bitmap
         self.background_tg = None
-        self.clickable     = True   # by default a widget doesn't do anything when clicked
-        self.callback      = self.border_toggle
+        # by default a widget doesn't do anything when clicked
+        self.clickable     = False
+        # the callback function should take the click location tuple (xpos, ypos) as an argument
+        self.callback      = None
         self.set_background()
 
     def set_background(self, bg_color_index=None):
@@ -153,6 +161,7 @@ class Widget(displayio.Group):
 
     # Set the function to call when the widget is clicked
     def set_click_action(self, function):
+        self.clickable = True
         self.callback = function
 
 """
@@ -168,13 +177,17 @@ class TextWidget(Widget):
     LARGE_FONT = "unigui/fonts/fipps-12pt.bdf"
                  #"fonts/SNES-Italic-24.bdf"
                  #"fonts/Silom-Bold-24.bdf"
+    FONT_BUILT_IN = None
 
-    def __init__(self, name, x, y, width, height, font_size=LARGE_FONT):
+    def __init__(self, name, x, y, width, height, font_type=FONT_BUILT_IN):
         super().__init__(name, x, y, width, height)
         self.value     = ""
-        self.font_file = font_size
+        self.font_file = font_type
         self.color     = VSCode.ORANGE
-        font = bitmap_font.load_font(self.font_file)
+        if self.font_file:
+            font = bitmap_font.load_font(self.font_file)
+        else:
+            font = terminalio.FONT
         self.label = label.Label(font, text=self.value, background=self.palette[1], color=self.color)
         self.append(self.label)
 
@@ -187,7 +200,9 @@ class TextWidget(Widget):
             return None
 
     # sets the text to display
-    def set_value(self, value, h_justification='left', v_justification='top'):
+    def set_value(self, value, h_justification='center', v_justification='center'):
+        if self.value == value:
+            return
         (label_idx, label) = self.get_label()
         if label:
             self.value = value
@@ -266,7 +281,7 @@ class GraphicsWidget(Widget):
             return None
 
     # Draws a random triangle centered in the widget
-    def set_main_area(self):
+    def set_main_area(self, click_pos):
         (offset_x, offset_y) = (round(self.width/2), round(self.height/2))
         padding = 10 # TODO: paramatrize this value
         r = min(offset_x, offset_y) - padding

@@ -126,4 +126,5 @@ class UniGui(displayio.Group):
             contains_y = (y >= y_min) and (y < y_max)
             if contains_x and contains_y and widget.clickable:
                 print("Widget index " + str(widget_idx) + " is a match! " + "Doing callback...")
-                widget.callback()
+                relative_click_pos = (x - widget.x, y - widget.y)
+                widget.callback(relative_click_pos)
