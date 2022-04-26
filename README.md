@@ -14,7 +14,7 @@ There is also a class called `PygameDisplay` that uses pygame to create a `displ
 
 ## How to use this framework
 - Clone this repository to computer, then navigate into the project directory.
-- Create a python virtual environment with `python -m venv .venv`. Note: This project has been tested with Python 3.10.4 on Windows and Linux
+- Create a python virtual environment with `python -m venv .venv`. Note: This project has been tested with Python 3.10.4 on Windows and Linux. You can name your virtual environment directory whatever you like. The current `.gitignore` will ignore all directories starting with `.venv`
 - Activate the virtual environment on Linux with `source .venv/bin/activate.sh`, or on Windows PowerShell with `.venv\Scripts\Activate.ps1`.
 - Install dependencies with `pip install -r requirements.txt`.
 - Until an issue is resolved with running Adafruit Blinka on generic PC environments (PR#xxx), it's necessary to use my fork of Adafruit_Blinka, copy and paste the `microcontroller` directory into the virtual environment site-packages directory.
