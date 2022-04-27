@@ -1,7 +1,7 @@
 from context import unigui
 import displayio
 from unigui.unigui import UniGui
-from unigui.widget import GraphicsWidget, TextWidget, Widget
+from unigui.widget import GraphicsWidget, IconWidget, TextWidget, Widget
 from adafruit_display_shapes.line import Line
 from unigui.pygame_display import PygameDisplay
 import time
@@ -16,32 +16,35 @@ class Branch():
     def __init__(self, angle, length):
         # Children should be branches too
         self.left  = None
-        self.left_divisor = 1.2 + (randint(50, 100) / 100)
-        self.right_divisor = 1.2 + (randint(50, 100) / 100)
+        self.left_divisor = 1.2 + (randint(20, 100) / 100)
         self.right = None
+        self.right_divisor = 1.2 + (randint(20, 100) / 100)
         self.generation = 0
         self.length = length
         self.angle = angle
-        # self.grow(generations-1)
+        # Use this number to randomly vary the angles of child branches
+        self.angle_deviation = 314
+
+    def append_branch(self):
+        left_child_angle = -self.DEF_ANGLE + 10*math.sin(randint(0, self.angle_deviation) / 100)
+        self.left = Branch(left_child_angle, self.length/self.left_divisor)
+        self.left.generation = self.generation + 1
+        right_child_angle = self.DEF_ANGLE + 10*math.sin(randint(0, self.angle_deviation) / 100)
+        self.right = Branch(right_child_angle, self.length/self.right_divisor)
+        self.right.generation = self.generation + 1
 
     # Grow n number of nodes on the tree
     def grow(self, n):
         if n == 0:
             return
         if n == 1:
-            # Just append a new branch
-            self.left = Branch(-self.DEF_ANGLE, self.length/self.left_divisor)
-            self.left.generation = self.generation + 1
-            self.right = Branch(self.DEF_ANGLE, self.length/self.right_divisor)
-            self.right.generation = self.generation + 1
+            self.append_branch()
         else:
-            # Append a new branch and then grow the rest
-            self.left = Branch(-self.DEF_ANGLE, self.length/self.left_divisor)
-            self.left.generation = self.generation + 1
-            self.right = Branch(self.DEF_ANGLE, self.length/self.right_divisor)
-            self.right.generation = self.generation + 1
-            self.left.grow(n-1)
-            self.right.grow(n-1)
+            self.append_branch()
+            if self.left:
+                self.left.grow(n-1)
+            if self.right:
+                self.right.grow(n-1)
 
     def print(self):
         print("gen: " + str(self.generation) + ", angle: " + str(self.angle) + ", len: " + str(self.length))
@@ -84,7 +87,7 @@ class TreeWidget(Widget):
         self.regrow()
 
     def regrow(self):
-        div = 2 + (randint(0, 100) / 100)
+        div = 2.5 + (randint(0, 100) / 100)
         self.tree = Branch(0, round(self.height/div))
         self.tree.grow(6)
 
@@ -99,7 +102,7 @@ class TreeWidget(Widget):
             self.pop(gfx_idx)
         except:
             print("oops!")
-        start_pos = (round(self.width/2), self.height)
+        start_pos = (round(self.width/2), self.height-2)
         self.gfx = self.tree.draw(start_pos)
         print("length: " + str(self.__len__()))
         self.append(self.gfx)
@@ -116,18 +119,26 @@ gui = UniGui(WIDTH, HEIGHT, scale=SCALE_FACTOR)
 
 # create our title area:
 title = TextWidget("toolbar", 0, HEIGHT-32, round(WIDTH/2), 32)
+title.border_on(2)
 title.set_value("Tree Growth Simulation", h_justification="left")
 gui.add_widget(title)
 
 # create a seconds counter:
 timer = TextWidget("timer", round(WIDTH/2), HEIGHT-32, round(WIDTH/2), 32)
+timer.border_on(2)
 timer.set_value("0", h_justification="right")
 gui.add_widget(timer)
 
 # Create the main simulation window
-tree = TreeWidget("tree", 0, 0, WIDTH, HEIGHT-32)
+tree = TreeWidget("tree", 32, 0, WIDTH-32, HEIGHT-32)
+tree.border_on(2)
 tree.set_click_action(tree.click_action)
 gui.add_widget(tree)
+
+# Create the toolbar widget
+toolbar = IconWidget("toolbar", 0, 0, 32, HEIGHT-32)
+toolbar.border_on(2)
+gui.add_widget(toolbar)
 
 # Create the display and update it
 display = PygameDisplay(WIDTH*SCALE_FACTOR, HEIGHT*SCALE_FACTOR)
