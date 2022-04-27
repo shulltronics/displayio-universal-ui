@@ -1,57 +1,110 @@
 from context import unigui
-
+import displayio
 from unigui.unigui import UniGui
 from unigui.widget import GraphicsWidget, TextWidget, Widget
 from adafruit_display_shapes.line import Line
 from unigui.pygame_display import PygameDisplay
 import time
+import math
 from random import randint
 
 # A Branch has an angle relative to its parent (in degrees)
 # and a length
 class Branch():
     BASE_LEN = 10
-    def __init__(self, angle, length, generations):
+    DEF_ANGLE = 40
+    def __init__(self, angle, length):
         # Children should be branches too
-        self.children = []
+        self.left  = None
+        self.left_divisor = 1.2 + (randint(50, 100) / 100)
+        self.right_divisor = 1.2 + (randint(50, 100) / 100)
+        self.right = None
         self.generation = 0
         self.length = length
         self.angle = angle
-        self.grow(generations-1)
+        # self.grow(generations-1)
 
     # Grow n number of nodes on the tree
     def grow(self, n):
         if n == 0:
             return
         if n == 1:
-            # left_branch = Branch(10, BASE_LEN)
-            right_branch = Branch(10, Branch.BASE_LEN, n)
-            self.children.append(right_branch)
+            # Just append a new branch
+            self.left = Branch(-self.DEF_ANGLE, self.length/self.left_divisor)
+            self.left.generation = self.generation + 1
+            self.right = Branch(self.DEF_ANGLE, self.length/self.right_divisor)
+            self.right.generation = self.generation + 1
         else:
-            right_branch = Branch(10, Branch.BASE_LEN + n, n)
-            right_branch.generation = n
-            self.children.append(right_branch)
-            for child in self.children:
-                child.grow(n-1)
+            # Append a new branch and then grow the rest
+            self.left = Branch(-self.DEF_ANGLE, self.length/self.left_divisor)
+            self.left.generation = self.generation + 1
+            self.right = Branch(self.DEF_ANGLE, self.length/self.right_divisor)
+            self.right.generation = self.generation + 1
+            self.left.grow(n-1)
+            self.right.grow(n-1)
 
     def print(self):
-        for child in self.children:
-            child.print()
         print("gen: " + str(self.generation) + ", angle: " + str(self.angle) + ", len: " + str(self.length))
+        if self.left is not None:
+            self.left.print()
+        if self.right is not None:
+            self.right.print()
 
-root = Branch(0, 100, 1)
-root.print()
+    # This method returns a Group with lines representing the branches of the tree
+    def draw(self, start_position, acc_angle=0):
+        gfx = displayio.Group()
+        (x0, y0) = start_position
+        acc_angle += self.angle
+        # Get the end position using the angle and length
+        x1 = x0 + self.length*math.sin(math.radians(acc_angle))
+        x1 = round(x1)
+        y1 = y0 - self.length*math.cos(math.radians(acc_angle))
+        y1 = round(y1)
+        g = self.generation % 3
+        if g == 0:
+            c = 0xFF0000
+        elif g == 1:
+            c = 0xFFFF00
+        elif g == 2:
+            c = 0xFFFFFF
+        line = Line(x0, y0, x1, y1, color=c)
+        gfx.append(line)
+        if self.left is not None:
+            gfx.append(self.left.draw((x1, y1), acc_angle=acc_angle))
+        if self.right is not None:
+            gfx.append(self.right.draw((x1, y1), acc_angle=acc_angle))
+        return gfx
+
 
 class TreeWidget(Widget):
 
-    def __init__(self, name, x, y, width, height, tree):
+    def __init__(self, name, x, y, width, height):
         super().__init__(name, x, y, width, height)
-        self.tree = tree
+        self.gfx = None
+        self.regrow()
 
-    def set_main_area(self, click_pos):
-        (x, y) = (round(self.width/2), self.height)
-        gfx = Line(x, y, x, y-self.tree.length, color=0x00FF00)
-        self.append(gfx)
+    def regrow(self):
+        div = 2 + (randint(0, 100) / 100)
+        self.tree = Branch(0, round(self.height/div))
+        self.tree.grow(6)
+
+    def click_action(self, click_pos):
+        self.regrow()
+        self.set_main_area()
+
+    def set_main_area(self):
+        # first try to get the graphics layer if it exists
+        try:
+            gfx_idx = self.index(self.gfx)
+            self.pop(gfx_idx)
+        except:
+            print("oops!")
+        start_pos = (round(self.width/2), self.height)
+        self.gfx = self.tree.draw(start_pos)
+        print("length: " + str(self.__len__()))
+        self.append(self.gfx)
+        
+        
             
 
 # Configuration constants
@@ -63,7 +116,7 @@ gui = UniGui(WIDTH, HEIGHT, scale=SCALE_FACTOR)
 
 # create our title area:
 title = TextWidget("toolbar", 0, HEIGHT-32, round(WIDTH/2), 32)
-title.set_value(" Tree Growth Simulation", h_justification="left")
+title.set_value("Tree Growth Simulation", h_justification="left")
 gui.add_widget(title)
 
 # create a seconds counter:
@@ -72,8 +125,8 @@ timer.set_value("0", h_justification="right")
 gui.add_widget(timer)
 
 # Create the main simulation window
-tree = TreeWidget("tree", 0, 0, WIDTH, HEIGHT-32, root)
-tree.set_click_action(tree.set_main_area)
+tree = TreeWidget("tree", 0, 0, WIDTH, HEIGHT-32)
+tree.set_click_action(tree.click_action)
 gui.add_widget(tree)
 
 # Create the display and update it

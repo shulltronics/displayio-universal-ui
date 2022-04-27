@@ -7,20 +7,23 @@ import time
 from random import randint
 
 
-# This class creates a visual representation of an 8 bit register
-class RegisterWidget(Widget):
+# This class creates a visual representation of a 4 bit register
+class FourBitRegisterWidget(Widget):
+
+    NUM_BITS = 4
+    MAX_VAL  = (2**NUM_BITS)-1
 
     def __init__(self, number):
-        super().__init__("register", 32, 0, 256, 32)
+        # TODO - parametrize these pixel values
+        super().__init__("register", 96, 0, 128, 32)
         self.border_on(6)
-        # TODO - make click distinguishable between left and right "buttons"
         self.clickable = True
         self.callback = self.process_click
         self.number = number
         # initialize the bits
         self.bits = []
-        for bit in range(8):
-            xpos = 224 - 32*bit
+        for bit in range(self.NUM_BITS):
+            xpos = 96 - 32*bit
             bit_widget = Widget(str(bit), xpos, 0, 32, 32)
             # If the bit is set, color in the block with a bright color
             # otherwise make it transparent
@@ -54,10 +57,12 @@ class RegisterWidget(Widget):
             self.insert(bit_idx, bit)
 
     def setup_buttons(self):
-        self.left_button  = Widget("button_left", self.x, self.y, round(self.width/2), self.height)
+        self.left_button  = Widget("button_left", 0, 0, round(self.width/2), self.height)
         self.left_button.clickable = True
-        self.right_button = Widget("button_right", round(self.width/2), self.y, round(self.width/2), self.height)
+        # self.left_button.border_on(7)
+        self.right_button = Widget("button_right", round(self.width/2), 0, round(self.width/2), self.height)
         self.right_button.clickable = True
+        # self.right_button.border_on(4)
         self.left_button.callback  = self.decrement
         self.right_button.callback = self.increment
         self.append(self.left_button)
@@ -81,11 +86,11 @@ class RegisterWidget(Widget):
         if self.number > 0:
             self.number -= 1
         else:
-            self.number = 255
+            self.number = self.MAX_VAL
         self.update_bits()
 
     def increment(self):
-        if self.number < 255:
+        if self.number < self.MAX_VAL:
             self.number += 1
         else:
             self.number = 0
@@ -98,6 +103,15 @@ SCALE_FACTOR = 2
 # The main UniGui object
 gui = UniGui(WIDTH, HEIGHT, scale=SCALE_FACTOR)
 
+# Setup a list of 8 bit registers
+registers = []
+for i in range(3):
+    register = FourBitRegisterWidget(randint(0, FourBitRegisterWidget.MAX_VAL))
+    register.x = 96     # TODO - parametrize this
+    register.y = 32*i
+    registers.append(register)
+    gui.add_widget(register)
+
 # create our title area:
 title = TextWidget("toolbar", 0, HEIGHT-32, round(WIDTH/2), 32)
 title.set_value("Logic Puzzle Minigame", h_justification="left")
@@ -108,37 +122,49 @@ timer = TextWidget("timer", round(WIDTH/2), HEIGHT-32, round(WIDTH/2), 32)
 timer.set_value("0", h_justification="right")
 gui.add_widget(timer)
 
-# Setup a list of 8 bit registers
-registers = []
-for i in range(3):
-    register = RegisterWidget(randint(0, 256))
-    register.x = 32
-    register.y = 32*i
-    registers.append(register)
-    gui.add_widget(register)
+popup_margin = 3
+popup = TextWidget("popup", popup_margin*32, popup_margin*32, WIDTH-(2*popup_margin)*32, HEIGHT-(2*popup_margin)*32)
+# TODO - next line causes a bug.. the bg color covers the text
+# popup.set_background(1)
+popup.border_on(7)
+popup.set_value("You win!!")
 
 display = PygameDisplay(WIDTH*SCALE_FACTOR, HEIGHT*SCALE_FACTOR)
 gui.update(display)
 
 start_time = time.time()
+running = True
 while True:
+    # We do this always
     display.refresh()
     click = display.get_mouse_clicks()
+
+    
     if click is not None:
-        print(gui.__len__())
-        print("click: " + str(click))
-        gui.process_click(click)
-
-    # Go through the numbers and see if any two adjacent ones match
-    # if so, you've won the game, and we quit
-    for i in range(len(registers)):
-        if i is len(registers)-1:
-            break
-        if registers[i].number == registers[i+1].number:
+        if not running:
+            # restart
             display.quit()
+        else:
+            print(gui.__len__())
+            print("click: " + str(click))
+            gui.process_click(click)
 
-    # update the timer
-    dt = round(time.time() - start_time)
-    timer.set_value(str(dt), h_justification="right")
+    # Things we only do if game is running:
+    if running:
+
+        # Iterate through the registers
+        for i in range(len(registers)):
+            # Increment their positions
+            registers[i].y += 1
+            # If any two adjacent registers match, stop the game and show the popup
+            if i is len(registers)-1:
+                break
+            if registers[i].number == registers[i+1].number:
+                running = False
+                gui.add_widget(popup)
+
+        # update the timer
+        dt = round(time.time() - start_time)
+        timer.set_value(str(dt), h_justification="right")
 
     time.sleep(0.1)
