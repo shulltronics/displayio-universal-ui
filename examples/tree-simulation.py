@@ -23,6 +23,7 @@ class Branch():
         self.length = length
         self.angle = angle
         # Use this number to randomly vary the angles of child branches
+        # Consider how this number is related to pi.
         self.angle_deviation = 314
 
     def append_branch(self):

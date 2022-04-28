@@ -44,7 +44,7 @@ while(1):
         msgs.set_value(message[0:(j%len(message))])
         toolbar.set_value(str(time.strftime("%H:%M:%S")))
         button.set_value(message2[0:round(k)%len(message2)], h_justification='center', v_justification='center')
-        graphics.set_main_area()
+        graphics.set_main_area((0, 0))
 
 
    
