@@ -3,4 +3,3 @@ __pycache__/
 dist/
 examples/__pycache__/
 unigui/*.egg-info
-Adafruit_Blinka/
