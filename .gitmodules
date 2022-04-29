@@ -1,3 +1,3 @@
 [submodule "Adafruit_Blinka"]
 	path = Adafruit_Blinka
-	url = https://shulltronics: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@github.com/shulltronics/Adafruit_Blinka.git
+	url = https://github.com/shulltronics/Adafruit_Blinka.git
