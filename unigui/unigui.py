@@ -5,7 +5,8 @@
 # GENERIC_PC (Windows or Linux), use PygameDisplay
 # Raspberry Pi or Microcontroller, use appropriate display_bus and Display
 
-from widget import Widget, Solarized, VSCode
+# These will be re-exported to our package namespace
+from widget import *
 from pygamedisplay import PygameDisplay
 
 import displayio
