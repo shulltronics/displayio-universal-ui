@@ -5,12 +5,15 @@
 # GENERIC_PC (Windows or Linux), use PygameDisplay
 # Raspberry Pi or Microcontroller, use appropriate display_bus and Display
 
+from widget import Widget, Solarized, VSCode
+from pygamedisplay import PygameDisplay
+
 import displayio
 from adafruit_bitmap_font import bitmap_font
 from adafruit_display_text import label
-from unigui.widget import Widget, Solarized, VSCode
 from random import randint
 import math
+
 
 """
 This is the base class for my GUI
