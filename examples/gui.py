@@ -1,5 +1,5 @@
-from unigui.unigui import UniGui
-from unigui.widget import IconWidget, Widget, TextWidget, GraphicsWidget, Solarized
+from unigui import UniGui
+from unigui import IconWidget, Widget, TextWidget, GraphicsWidget, Solarized
 import time
 
 # Configuration constants

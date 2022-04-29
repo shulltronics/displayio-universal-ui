@@ -1,8 +1,4 @@
-from context import unigui
-
-from unigui.unigui import UniGui
-from unigui.widget import TextWidget
-from unigui.pygame_display import PygameDisplay
+from unigui import UniGui, TextWidget, PygameDisplay
 import time
 
 # Configuration constants

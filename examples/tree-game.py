@@ -1,9 +1,6 @@
-from context import unigui
 import displayio
-from unigui.unigui import UniGui
-from unigui.widget import GraphicsWidget, IconWidget, TextWidget, Widget
+from unigui import UniGui, GraphicsWidget, IconWidget, TextWidget, Widget, PygameDisplay
 from adafruit_display_shapes.line import Line
-from unigui.pygame_display import PygameDisplay
 import time
 import math
 from random import randint

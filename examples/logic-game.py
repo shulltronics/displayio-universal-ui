@@ -1,11 +1,6 @@
-from context import unigui
-
-from unigui.unigui import UniGui
-from unigui.widget import TextWidget, Widget
-from unigui.pygame_display import PygameDisplay
+from unigui import UniGui, TextWidget, Widget, PygameDisplay
 import time
 from random import randint
-
 
 # This class creates a visual representation of a 4 bit register
 class FourBitRegisterWidget(Widget):
