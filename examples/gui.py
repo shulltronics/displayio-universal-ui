@@ -3,8 +3,8 @@ from unigui.widget import IconWidget, Widget, TextWidget, GraphicsWidget, Solari
 import time
 
 # Configuration constants
-WIDTH = 320
-HEIGHT = 240
+WIDTH = 640
+HEIGHT = 480
 SCALE_FACTOR = 2
 
 # The main UniGui object
