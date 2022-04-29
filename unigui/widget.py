@@ -9,7 +9,19 @@ from adafruit_display_shapes.circle import Circle
 import math
 from random import randint
 
-class CustomColors():
+class ColorScheme():
+    indices = {
+        'TRANSPARENT':    0,
+        'BASE':           1,
+        'BASE_HIGHLIGHT': 2,
+        'TEXT':           3,
+        'TEXT_HIGHLIGHT': 4,
+        'COLOR_0':        5,
+        'COLOR_1':        6,
+        'COLOR_2':        7,
+    }
+
+class Shulltronics(ColorScheme):
     WHITE      = 0xFFFFFF
     BLACK      = 0x000000
     LIGHT_GRAY = 0x707070
@@ -19,8 +31,17 @@ class CustomColors():
     BLUE       = 0x0000FF
     MAGENTA    = 0xFF00FF
 
-class Solarized():
-    
+    dark = displayio.Palette(8)
+    dark[ColorScheme.indices['TRANSPARENT']]    = 0          # Transparent
+    dark[ColorScheme.indices['BASE']]           = BLACK      # Background
+    dark[ColorScheme.indices['BASE_HIGHLIGHT']] = DARK_GRAY  # Background highlights
+    dark[ColorScheme.indices['TEXT']]           = LIGHT_GRAY # Default text
+    dark[ColorScheme.indices['TEXT_HIGHLIGHT']] = WHITE      # Emphasized text
+    dark[ColorScheme.indices['COLOR_0']]        = BLUE
+    dark[ColorScheme.indices['COLOR_1']]        = RED
+    dark[ColorScheme.indices['COLOR_2']]        = MAGENTA
+
+class Solarized(ColorScheme):
     BASE03  = 0x002B36
     BASE02  = 0x073642
     BASE01  = 0x586E75
@@ -37,24 +58,25 @@ class Solarized():
     BLUE    = 0x268BD2
     CYAN    = 0x2AA198
     GREEN   = 0x859900
-    light    = displayio.Palette(8)
-    light[0] = BASE3    # Background
-    light[1] = BASE2    # Background highlights
-    light[2] = BASE00   # Default text
-    light[3] = BASE01   # Emphasized text
-    light[4] = BLUE     # Highlight 1
-    light[5] = CYAN     # Highlight 2
-    light[6] = MAGENTA  # Highlight 3
-    light[7] = RED      # Highlight 4
-    dark     = displayio.Palette(8)
-    dark[0]  = BASE03   # Background
-    dark[1]  = BASE02   # Background highlights
-    dark[2]  = BASE0    # Default text
-    dark[3]  = BASE1    # Emphasized text
-    dark[4]  = BLUE
-    dark[5]  = CYAN
-    dark[6]  = MAGENTA
-    dark[7]  = RED
+
+    light = displayio.Palette(8)
+    light[ColorScheme.indices['TRANSPARENT']]    = 0        # Transparent
+    light[ColorScheme.indices['BASE']]           = BASE3    # Background
+    light[ColorScheme.indices['BASE_HIGHLIGHT']] = BASE03   # Background highlights
+    light[ColorScheme.indices['TEXT']]           = BASE00   # Default text
+    light[ColorScheme.indices['TEXT_HIGHLIGHT']] = BASE01   # Emphasized text
+    light[ColorScheme.indices['COLOR_0']]        = BLUE     # Highlight 1
+    light[ColorScheme.indices['COLOR_1']]        = CYAN     # Highlight 2
+    light[ColorScheme.indices['COLOR_2']]        = MAGENTA  # Highlight 3
+    dark = displayio.Palette(8)
+    dark[ColorScheme.indices['TRANSPARENT']]    = 0
+    dark[ColorScheme.indices['BASE']]           = BASE03
+    dark[ColorScheme.indices['BASE_HIGHLIGHT']] = BASE02
+    dark[ColorScheme.indices['TEXT']]           = BASE02
+    dark[ColorScheme.indices['TEXT_HIGHLIGHT']] = BASE03
+    dark[ColorScheme.indices['COLOR_0']]        = BLUE
+    dark[ColorScheme.indices['COLOR_1']]        = GREEN
+    dark[ColorScheme.indices['COLOR_2']]        = RED
 
 class VSCode():
     BASE03  = 0x000000
@@ -73,15 +95,26 @@ class VSCode():
     BLUE    = 0x6796E6
     CYAN    = 0x9CDCFE
     GREEN   = 0x008000
-    dark    = displayio.Palette(8)
-    dark[0] = BASE03   # Background
-    dark[1] = BASE02   # Background highlights
-    dark[2] = BASE0    # Default text
-    dark[3] = BASE1    # Emphasized text
-    dark[4] = BLUE
-    dark[5] = CYAN
-    dark[6] = VIOLET
-    dark[7] = ORANGE
+
+    light = displayio.Palette(8)
+    light[ColorScheme.indices['TRANSPARENT']]    = 0x010101        # Transparent
+    light[ColorScheme.indices['BASE']]           = BASE3    # Background
+    light[ColorScheme.indices['BASE_HIGHLIGHT']] = BASE03    # Background highlights
+    light[ColorScheme.indices['TEXT']]           = ORANGE   # Default text
+    light[ColorScheme.indices['TEXT_HIGHLIGHT']] = BASE01   # Emphasized text
+    light[ColorScheme.indices['COLOR_0']]        = BLUE     # Highlight 1
+    light[ColorScheme.indices['COLOR_1']]        = CYAN     # Highlight 2
+    light[ColorScheme.indices['COLOR_2']]        = MAGENTA  # Highlight 3
+    
+    dark = displayio.Palette(8)
+    dark[ColorScheme.indices['TRANSPARENT']]    = 0x010101
+    dark[ColorScheme.indices['BASE']]           = BASE03
+    dark[ColorScheme.indices['BASE_HIGHLIGHT']] = BASE02
+    dark[ColorScheme.indices['TEXT']]           = ORANGE
+    dark[ColorScheme.indices['TEXT_HIGHLIGHT']] = BASE03
+    dark[ColorScheme.indices['COLOR_0']]        = BLUE
+    dark[ColorScheme.indices['COLOR_1']]        = GREEN
+    dark[ColorScheme.indices['COLOR_2']]        = ORANGE
 
 """
 A Widget has a name, (x, y) location (upper left corner),
@@ -91,13 +124,14 @@ and a (w, h) size in pixels.
   - etc..
 It also has the following properties:
   - it can be attached to events and be updated
+  - it will adopt the GUI's colorshceme unless an overide colorshceme is passed as an argument
 """
 class Widget(displayio.Group):
 
-    def __init__(self, name, x, y, width, height):
+    def __init__(self, name, x, y, width, height, colorscheme=Shulltronics.dark):
         super().__init__()
         self.name          = name
-        self.palette       = VSCode.dark
+        self.palette       = colorscheme
         self.palette.make_transparent(0)
         self.x             = x
         self.y             = y
@@ -179,11 +213,11 @@ class TextWidget(Widget):
                  #"fonts/Silom-Bold-24.bdf"
     FONT_BUILT_IN = None
 
-    def __init__(self, name, x, y, width, height, font_type=FONT_BUILT_IN):
+    def __init__(self, name, x, y, width, height, font_type=FONT_BUILT_IN, colorscheme=Shulltronics.dark):
         super().__init__(name, x, y, width, height)
         self.value     = ""
         self.font_file = font_type
-        self.color     = VSCode.ORANGE
+        self.color     = self.palette[ColorScheme.indices['TEXT']]
         if self.font_file:
             font = bitmap_font.load_font(self.font_file)
         else:
@@ -248,7 +282,7 @@ class IconWidget(Widget):
         # Setup the icon palette to the color we want, making index 0 transparent
         # Be sure when creating icons to make the background color be index 0
         self.icon_palette.make_transparent(0)
-        self.icon_palette[1] = self.palette[3]
+        self.icon_palette[1] = self.palette[ColorScheme.indices['COLOR_2']]
         self.tg = displayio.TileGrid(
             self.bm,
             pixel_shader=self.icon_palette,
@@ -292,7 +326,10 @@ class GraphicsWidget(Widget):
         (x0, y0) = (round(r*math.sin(p0_angle)) + offset_x, round(r*math.cos(p0_angle)) + offset_y)
         (x1, y1) = (round(r*math.sin(p1_angle)) + offset_x, round(r*math.cos(p1_angle)) + offset_y)
         (x2, y2) = (round(r*math.sin(p2_angle)) + offset_x, round(r*math.cos(p2_angle)) + offset_y)
-        triangle = Triangle(x0, y0, x1, y1, x2, y2, fill=self.palette[5], outline=VSCode.GREEN)
+        triangle = Triangle(x0, y0, x1, y1, x2, y2,
+            fill=self.palette[ColorScheme.indices['COLOR_0']],
+            outline=self.palette[ColorScheme.indices['COLOR_1']],
+        )
         # if the graphics already exist, update them
         if self.graphics:
             (graphics_idx, graphics) = self.get_graphics_group()

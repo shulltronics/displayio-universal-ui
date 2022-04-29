@@ -14,6 +14,7 @@ There is also a class called `PygameDisplay` that uses pygame to create a `displ
 - [ ] Fix border_on function for generic widget so border is always drawn on top of other content (useful for viewing widget dimensions)
 - [ ] Map names (such as BASE_DARK, BASE_LIGHT, TEXT_DEFAULT, TEXT_HIGHLIGHT, etc) to the palette indices so that I can reference them independently of the color scheme
 - [ ] Figure out how to better handle clicks. For example, I might want a single widget to have multiple click regions. I don't think this is easy to do right now. Consider removing UniGui object totally and just making the Widget idea fully recursive.
+- [ ] Fix font file paths so they work always
 
 ## How to use this framework
 - Clone this repository to your computer, then navigate into the project directory.

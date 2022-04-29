@@ -1,4 +1,4 @@
-from unigui import UniGui, TextWidget, PygameDisplay
+from unigui import UniGui, TextWidget, PygameDisplay, Solarized
 import time
 
 # Configuration constants
@@ -7,7 +7,12 @@ HEIGHT = 64
 SCALE_FACTOR = 2
 
 # The main UniGui object
-gui = UniGui(WIDTH, HEIGHT, scale=SCALE_FACTOR)
+gui = UniGui(
+    WIDTH,
+    HEIGHT,
+    scale=SCALE_FACTOR,
+    colorscheme=Solarized.light
+)
 
 # Setup a toolbar full width and 32 px high
 toolbar_widget = TextWidget("toolbar", 0, 0, WIDTH, HEIGHT)

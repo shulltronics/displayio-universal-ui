@@ -26,22 +26,19 @@ An instance represents the root window with the following properties:
 """
 class UniGui(displayio.Group):
 
-    def __init__(self, width, height, scale=1):
+    def __init__(self, width, height, scale=1, colorscheme=Solarized.light):
         super().__init__(scale=scale)
         self.x             = 0
         self.y             = 0
         self.width         = width
         self.height        = height
-        self.palette       = VSCode.dark
-        self.bg_color      = Solarized.BASE03
-        self.text_color    = Solarized.BASE3
+        self.palette       = colorscheme
         self.widgets       = []
-        self.border_color  = Solarized.VIOLET
         self.background_bm = None
         self.background_tg = None
         self.set_background()
 
-    def set_background(self, bg_color_index=0):
+    def set_background(self, bg_color_index=ColorScheme.indices['BASE']):
         bg_bitmap = displayio.Bitmap(self.width, self.height, 8)
         bg_bitmap.fill(bg_color_index)
         self.background_bm = bg_bitmap
@@ -57,7 +54,7 @@ class UniGui(displayio.Group):
             print("Tried to get non-existant background tilegrid!")
             return None
 
-    def border_on(self, color_idx=7):
+    def border_on(self, color_idx=ColorScheme.indices['BASE_HIGHLIGHT']):
         bm = self.background_bm
         # get the index of the background tilegrid.
         # Don't care about the tg itself because we're making a new one
@@ -76,7 +73,7 @@ class UniGui(displayio.Group):
         # get the index of the background tilegrid.
         # Don't care about the tg itself because we're making a new one
         (tg_index, _) = self.get_background_tilegrid()
-        bm.fill(0)
+        bm.fill(ColorScheme.indices['BASE'])
         self.background_tg = displayio.TileGrid(bm, pixel_shader=self.palette)
         self.insert(tg_index, self.background_tg)
 
@@ -93,6 +90,10 @@ class UniGui(displayio.Group):
 
     def add_widget(self, widget):
         # TODO: first validate the layout
+
+        # Set the widget's colorscheme
+        # TODO: Add support for overriding the colorscheme
+        widget.palette = self.palette
         self.widgets.append(widget)
         self.append(widget)
 
