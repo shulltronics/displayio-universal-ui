@@ -1,5 +1,9 @@
 .venv*
+
 __pycache__/
 dist/
-examples/__pycache__/
+
 unigui/*.egg-info
+
+examples/__pycache__/
+examples/test*

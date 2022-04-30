@@ -1,4 +1,5 @@
-from unigui import UniGui, TextWidget, PygameDisplay, Solarized
+from unigui import UniGui, TextWidget, PygameDisplay
+from unigui import VSCode, Solarized
 import time
 
 # Configuration constants
@@ -11,7 +12,7 @@ gui = UniGui(
     WIDTH,
     HEIGHT,
     scale=SCALE_FACTOR,
-    colorscheme=Solarized.light
+    colorscheme=VSCode.dark
 )
 
 # Setup a toolbar full width and 32 px high

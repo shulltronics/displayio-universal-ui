@@ -8,114 +8,7 @@ from adafruit_display_shapes.triangle import Triangle
 from adafruit_display_shapes.circle import Circle
 import math
 from random import randint
-
-class ColorScheme():
-    indices = {
-        'TRANSPARENT':    0,
-        'BASE':           1,
-        'BASE_HIGHLIGHT': 2,
-        'TEXT':           3,
-        'TEXT_HIGHLIGHT': 4,
-        'COLOR_0':        5,
-        'COLOR_1':        6,
-        'COLOR_2':        7,
-    }
-
-class Shulltronics(ColorScheme):
-    WHITE      = 0xFFFFFF
-    BLACK      = 0x000000
-    LIGHT_GRAY = 0x707070
-    DARK_GRAY  = 0x454545
-    RED        = 0xFF0000
-    GREEN      = 0x00FF00
-    BLUE       = 0x0000FF
-    MAGENTA    = 0xFF00FF
-
-    dark = displayio.Palette(8)
-    dark[ColorScheme.indices['TRANSPARENT']]    = 0          # Transparent
-    dark[ColorScheme.indices['BASE']]           = BLACK      # Background
-    dark[ColorScheme.indices['BASE_HIGHLIGHT']] = DARK_GRAY  # Background highlights
-    dark[ColorScheme.indices['TEXT']]           = LIGHT_GRAY # Default text
-    dark[ColorScheme.indices['TEXT_HIGHLIGHT']] = WHITE      # Emphasized text
-    dark[ColorScheme.indices['COLOR_0']]        = BLUE
-    dark[ColorScheme.indices['COLOR_1']]        = RED
-    dark[ColorScheme.indices['COLOR_2']]        = MAGENTA
-
-class Solarized(ColorScheme):
-    BASE03  = 0x002B36
-    BASE02  = 0x073642
-    BASE01  = 0x586E75
-    BASE00  = 0x657B83
-    BASE0   = 0x839496
-    BASE1   = 0x93A1A1
-    BASE2   = 0xEEE8D5
-    BASE3   = 0xFDF6E3
-    YELLOW  = 0xB58900
-    ORANGE  = 0xCB4B16
-    RED     = 0xDC322F
-    MAGENTA = 0xD33682
-    VIOLET  = 0x6C71C4
-    BLUE    = 0x268BD2
-    CYAN    = 0x2AA198
-    GREEN   = 0x859900
-
-    light = displayio.Palette(8)
-    light[ColorScheme.indices['TRANSPARENT']]    = 0        # Transparent
-    light[ColorScheme.indices['BASE']]           = BASE3    # Background
-    light[ColorScheme.indices['BASE_HIGHLIGHT']] = BASE03   # Background highlights
-    light[ColorScheme.indices['TEXT']]           = BASE00   # Default text
-    light[ColorScheme.indices['TEXT_HIGHLIGHT']] = BASE01   # Emphasized text
-    light[ColorScheme.indices['COLOR_0']]        = BLUE     # Highlight 1
-    light[ColorScheme.indices['COLOR_1']]        = CYAN     # Highlight 2
-    light[ColorScheme.indices['COLOR_2']]        = MAGENTA  # Highlight 3
-    dark = displayio.Palette(8)
-    dark[ColorScheme.indices['TRANSPARENT']]    = 0
-    dark[ColorScheme.indices['BASE']]           = BASE03
-    dark[ColorScheme.indices['BASE_HIGHLIGHT']] = BASE02
-    dark[ColorScheme.indices['TEXT']]           = BASE02
-    dark[ColorScheme.indices['TEXT_HIGHLIGHT']] = BASE03
-    dark[ColorScheme.indices['COLOR_0']]        = BLUE
-    dark[ColorScheme.indices['COLOR_1']]        = GREEN
-    dark[ColorScheme.indices['COLOR_2']]        = RED
-
-class VSCode():
-    BASE03  = 0x000000
-    BASE02  = 0x202020
-    BASE01  = 0x586E75
-    BASE00  = 0x657B83
-    BASE0   = 0x839496
-    BASE1   = 0x93A1A1
-    BASE2   = 0xEEE8D5
-    BASE3   = 0xFDF6E3
-    YELLOW  = 0xB58900
-    ORANGE  = 0xF38518
-    RED     = 0xFF0000
-    MAGENTA = 0xD33682
-    VIOLET  = 0xB267E6
-    BLUE    = 0x6796E6
-    CYAN    = 0x9CDCFE
-    GREEN   = 0x008000
-
-    light = displayio.Palette(8)
-    light[ColorScheme.indices['TRANSPARENT']]    = 0x010101        # Transparent
-    light[ColorScheme.indices['BASE']]           = BASE3    # Background
-    light[ColorScheme.indices['BASE_HIGHLIGHT']] = BASE03    # Background highlights
-    light[ColorScheme.indices['TEXT']]           = ORANGE   # Default text
-    light[ColorScheme.indices['TEXT_HIGHLIGHT']] = BASE01   # Emphasized text
-    light[ColorScheme.indices['COLOR_0']]        = BLUE     # Highlight 1
-    light[ColorScheme.indices['COLOR_1']]        = CYAN     # Highlight 2
-    light[ColorScheme.indices['COLOR_2']]        = MAGENTA  # Highlight 3
-    
-    dark = displayio.Palette(8)
-    dark[ColorScheme.indices['TRANSPARENT']]    = 0x010101
-    dark[ColorScheme.indices['BASE']]           = BASE03
-    dark[ColorScheme.indices['BASE_HIGHLIGHT']] = BASE02
-    dark[ColorScheme.indices['TEXT']]           = ORANGE
-    dark[ColorScheme.indices['TEXT_HIGHLIGHT']] = BASE03
-    dark[ColorScheme.indices['COLOR_0']]        = BLUE
-    dark[ColorScheme.indices['COLOR_1']]        = GREEN
-    dark[ColorScheme.indices['COLOR_2']]        = ORANGE
-
+from colorscheme import *
 """
 A Widget has a name, (x, y) location (upper left corner),
 and a (w, h) size in pixels.
@@ -124,15 +17,16 @@ and a (w, h) size in pixels.
   - etc..
 It also has the following properties:
   - it can be attached to events and be updated
-  - it will adopt the GUI's colorshceme unless an overide colorshceme is passed as an argument
+  - it will adopt the GUI's colorshceme unless an overide colorscheme is passed as an argument
 """
 class Widget(displayio.Group):
 
-    def __init__(self, name, x, y, width, height, colorscheme=Shulltronics.dark):
+    def __init__(self, name, x, y, width, height, colorscheme=None):
         super().__init__()
         self.name          = name
         self.palette       = colorscheme
-        self.palette.make_transparent(0)
+        if self.palette:
+            self.palette.make_transparent(0)
         self.x             = x
         self.y             = y
         self.width         = width
@@ -144,9 +38,11 @@ class Widget(displayio.Group):
         self.clickable     = False
         # the callback function should take the click location tuple (xpos, ypos) as an argument
         self.callback      = None
+
+    def init(self):
         self.set_background()
 
-    def set_background(self, bg_color_index=None):
+    def set_background(self, bg_color_index=ColorScheme.indices['BASE']):
         bg_bitmap = displayio.Bitmap(self.width, self.height, 8)
         bg_bitmap.fill(bg_color_index)
         self.background_bm = bg_bitmap
@@ -162,7 +58,7 @@ class Widget(displayio.Group):
             print("Tried to get non-existant background tilegrid!")
             return None
 
-    def border_on(self, color_idx=1):
+    def border_on(self, color_idx=ColorScheme.indices['BASE_HIGHLIGHT']):
         self.border = True
         bm = self.background_bm
         # get the index of the background tilegrid.
@@ -183,11 +79,12 @@ class Widget(displayio.Group):
         # get the index of the background tilegrid.
         # Don't care about the tg itself because we're making a new one
         (tg_index, _) = self.get_background_tilegrid()
-        bm.fill(0)
+        # Fill with the base color index
+        bm.fill(ColorScheme.indices['BASE'])
         self.background_tg = displayio.TileGrid(bm, pixel_shader=self.palette)
         self.insert(tg_index, self.background_tg)
 
-    def border_toggle(self):
+    def border_toggle(self, click_pos):
         if self.border:
             self.border_off()
         else:
@@ -200,7 +97,6 @@ class Widget(displayio.Group):
 
 """
 A Widget that displays a string nicely
-    TODO: Add string justification feature (vertical and horizontal)
     TODO: Add padding 
     TODO: ability to wrap, cutoff, or scroll long text
 """
@@ -213,11 +109,14 @@ class TextWidget(Widget):
                  #"fonts/Silom-Bold-24.bdf"
     FONT_BUILT_IN = None
 
-    def __init__(self, name, x, y, width, height, font_type=FONT_BUILT_IN, colorscheme=Shulltronics.dark):
+    def __init__(self, name, x, y, width, height, font_type=FONT_BUILT_IN, colorscheme=None):
         super().__init__(name, x, y, width, height)
         self.value     = ""
         self.font_file = font_type
-        self.color     = self.palette[ColorScheme.indices['TEXT']]
+
+    def init(self):
+        super().init()
+        self.color = self.palette[ColorScheme.indices['TEXT']]
         if self.font_file:
             font = bitmap_font.load_font(self.font_file)
         else:
@@ -274,6 +173,8 @@ class IconWidget(Widget):
 
     def __init__(self, name, x, y, width=32, height=32):
         super().__init__(name, x, y, width, height)
+    
+    def init(self):
         self.bm, self.icon_palette = adafruit_imageload.load(
             "unigui/images/128x32/px_icons.bmp",
             bitmap=displayio.Bitmap,
@@ -282,7 +183,7 @@ class IconWidget(Widget):
         # Setup the icon palette to the color we want, making index 0 transparent
         # Be sure when creating icons to make the background color be index 0
         self.icon_palette.make_transparent(0)
-        self.icon_palette[1] = self.palette[ColorScheme.indices['COLOR_2']]
+        self.icon_palette[1] = self.palette[ColorScheme.indices['COLOR_0']]
         self.tg = displayio.TileGrid(
             self.bm,
             pixel_shader=self.icon_palette,
@@ -293,7 +194,7 @@ class IconWidget(Widget):
             default_tile=2,
         )
         self.append(self.tg)
-    
+
     def set_icon_index(self, idx=0):
         self.tg[0] = idx
 

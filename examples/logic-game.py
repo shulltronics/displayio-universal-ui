@@ -11,12 +11,15 @@ class FourBitRegisterWidget(Widget):
     def __init__(self, number):
         # TODO - parametrize these pixel values
         super().__init__("register", 96, 0, 128, 32)
-        self.border_on(6)
         self.clickable = True
         self.callback = self.process_click
         self.number = number
         # initialize the bits
         self.bits = []
+        
+    def init(self):
+        super().init()
+        self.border_on(6)
         for bit in range(self.NUM_BITS):
             xpos = 96 - 32*bit
             bit_widget = Widget(str(bit), xpos, 0, 32, 32)
@@ -102,23 +105,25 @@ gui = UniGui(WIDTH, HEIGHT, scale=SCALE_FACTOR)
 registers = []
 for i in range(3):
     register = FourBitRegisterWidget(randint(0, FourBitRegisterWidget.MAX_VAL))
+    gui.add_widget(register)
     register.x = 96     # TODO - parametrize this
     register.y = 32*i
     registers.append(register)
-    gui.add_widget(register)
 
 # create our title area:
 title = TextWidget("toolbar", 0, HEIGHT-32, round(WIDTH/2), 32)
-title.set_value("Logic Puzzle Minigame", h_justification="left")
 gui.add_widget(title)
+title.set_value("Logic Puzzle Minigame", h_justification="left")
 
 # create a seconds counter:
 timer = TextWidget("timer", round(WIDTH/2), HEIGHT-32, round(WIDTH/2), 32)
-timer.set_value("0", h_justification="right")
 gui.add_widget(timer)
+timer.set_value("0", h_justification="right")
 
 popup_margin = 3
 popup = TextWidget("popup", popup_margin*32, popup_margin*32, WIDTH-(2*popup_margin)*32, HEIGHT-(2*popup_margin)*32)
+gui.add_widget(popup)
+# gui.remove(popup)
 # TODO - next line causes a bug.. the bg color covers the text
 # popup.set_background(1)
 popup.border_on(7)
@@ -156,7 +161,7 @@ while True:
                 break
             if registers[i].number == registers[i+1].number:
                 running = False
-                gui.add_widget(popup)
+                # gui.add_widget(popup)
 
         # update the timer
         dt = round(time.time() - start_time)

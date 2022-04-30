@@ -7,6 +7,7 @@
 
 # These will be re-exported to our package namespace
 from widget import *
+from colorscheme import *
 from pygamedisplay import PygameDisplay
 
 import displayio
@@ -14,7 +15,6 @@ from adafruit_bitmap_font import bitmap_font
 from adafruit_display_text import label
 from random import randint
 import math
-
 
 """
 This is the base class for my GUI
@@ -33,6 +33,7 @@ class UniGui(displayio.Group):
         self.width         = width
         self.height        = height
         self.palette       = colorscheme
+        self.palette.make_transparent(ColorScheme.indices['TRANSPARENT'])
         self.widgets       = []
         self.background_bm = None
         self.background_tg = None
@@ -73,6 +74,7 @@ class UniGui(displayio.Group):
         # get the index of the background tilegrid.
         # Don't care about the tg itself because we're making a new one
         (tg_index, _) = self.get_background_tilegrid()
+        # Fill with the base color index
         bm.fill(ColorScheme.indices['BASE'])
         self.background_tg = displayio.TileGrid(bm, pixel_shader=self.palette)
         self.insert(tg_index, self.background_tg)
@@ -89,11 +91,12 @@ class UniGui(displayio.Group):
             self.append(icon_tg)
 
     def add_widget(self, widget):
-        # TODO: first validate the layout
+        # TODO: first validate the layout?
 
-        # Set the widget's colorscheme
-        # TODO: Add support for overriding the colorscheme
-        widget.palette = self.palette
+        # If we didn't override the widget's colorscheme, set it here
+        if widget.palette is None:
+            widget.palette = self.palette
+        widget.init()
         self.widgets.append(widget)
         self.append(widget)
 

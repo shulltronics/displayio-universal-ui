@@ -80,6 +80,9 @@ class TreeWidget(Widget):
     def __init__(self, name, x, y, width, height):
         super().__init__(name, x, y, width, height)
         self.gfx = None
+
+    def init(self):
+        super().init()
         self.regrow()
 
     def regrow(self):
@@ -113,21 +116,21 @@ gui = UniGui(WIDTH, HEIGHT, scale=SCALE_FACTOR)
 
 # create our title area:
 title = TextWidget("toolbar", 0, HEIGHT-32, round(WIDTH/2), 32)
-title.border_on(2)
-title.set_value("Tree Growth Simulation", h_justification="left")
 gui.add_widget(title)
+title.border_on()
+title.set_value("Tree Growth Simulation", h_justification="left")
 
 # create a seconds counter:
 timer = TextWidget("timer", round(WIDTH/2), HEIGHT-32, round(WIDTH/2), 32)
-timer.border_on(2)
-timer.set_value("0", h_justification="right")
 gui.add_widget(timer)
+timer.border_on()
+timer.set_value("0", h_justification="right")
 
 # Create the main simulation window
 tree = TreeWidget("tree", 0, 0, WIDTH, HEIGHT-32)
-tree.border_on(2)
-tree.set_click_action(tree.click_action)
 gui.add_widget(tree)
+tree.border_on()
+tree.set_click_action(tree.click_action)
 
 # Create the display and update it
 display = PygameDisplay(WIDTH*SCALE_FACTOR, HEIGHT*SCALE_FACTOR)
