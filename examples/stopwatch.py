@@ -6,17 +6,26 @@ import time
 WIDTH = 128
 HEIGHT = 64
 SCALE_FACTOR = 2
+CS = Solarized.dark
 
 # The main UniGui object
 gui = UniGui(
     WIDTH,
     HEIGHT,
     scale=SCALE_FACTOR,
-    colorscheme=VSCode.dark
+    colorscheme=CS
 )
 
-# Setup a toolbar full width and 32 px high
-toolbar_widget = TextWidget("toolbar", 0, 0, WIDTH, HEIGHT)
+# Setup a full screen text widget
+toolbar_widget = TextWidget(
+    "toolbar",
+    0,
+    0,
+    WIDTH,
+    HEIGHT,
+    colorscheme=CS
+)
+toolbar_widget.border_on()
 gui.add_widget(toolbar_widget)
 
 display = PygameDisplay(WIDTH*SCALE_FACTOR, HEIGHT*SCALE_FACTOR)

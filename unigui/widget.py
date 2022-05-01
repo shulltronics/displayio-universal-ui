@@ -9,24 +9,23 @@ from adafruit_display_shapes.circle import Circle
 import math
 from random import randint
 from colorscheme import *
-"""
-A Widget has a name, (x, y) location (upper left corner),
-and a (w, h) size in pixels.
- A Widget is a displayio.Group, and thus has the following properties:
-  - It can have a list of children
-  - etc..
-It also has the following properties:
-  - it can be attached to events and be updated
-  - it will adopt the GUI's colorshceme unless an overide colorscheme is passed as an argument
-"""
-class Widget(displayio.Group):
 
-    def __init__(self, name, x, y, width, height, colorscheme=None):
-        super().__init__()
+class Widget(displayio.Group):
+    """
+    A Widget has a name, (x, y) location (upper left corner),
+    and a (w, h) size in pixels.
+    A Widget is a displayio.Group, and thus has the following properties:
+    - It can have a list of children
+    - etc..
+    It also has the following properties:
+    - it can be attached to events and be updated
+    - it will adopt the GUI's colorshceme unless an overide colorscheme is passed as an argument
+    """
+    def __init__(self, name, x, y, width, height, colorscheme, scale=1):
+        super().__init__(scale=scale)
         self.name          = name
         self.palette       = colorscheme
-        if self.palette:
-            self.palette.make_transparent(0)
+        self.palette.make_transparent(0)
         self.x             = x
         self.y             = y
         self.width         = width
@@ -38,9 +37,10 @@ class Widget(displayio.Group):
         self.clickable     = False
         # the callback function should take the click location tuple (xpos, ypos) as an argument
         self.callback      = None
+        self.set_background()
 
     def init(self):
-        self.set_background()
+        pass
 
     def set_background(self, bg_color_index=ColorScheme.indices['BASE']):
         bg_bitmap = displayio.Bitmap(self.width, self.height, 8)
@@ -95,13 +95,12 @@ class Widget(displayio.Group):
         self.clickable = True
         self.callback = function
 
-"""
-A Widget that displays a string nicely
-    TODO: Add padding 
-    TODO: ability to wrap, cutoff, or scroll long text
-"""
 class TextWidget(Widget):
-
+    """
+    A Widget that displays a string nicely
+        TODO: Add padding 
+        TODO: ability to wrap, cutoff, or scroll long text
+    """
     SMALL_FONT = "unigui/fonts/6x12.bdf"
                  #"fonts/VCROSDMono-14.bdf"
     LARGE_FONT = "unigui/fonts/fipps-12pt.bdf"
@@ -109,8 +108,8 @@ class TextWidget(Widget):
                  #"fonts/Silom-Bold-24.bdf"
     FONT_BUILT_IN = None
 
-    def __init__(self, name, x, y, width, height, font_type=FONT_BUILT_IN, colorscheme=None):
-        super().__init__(name, x, y, width, height)
+    def __init__(self, name, x, y, width, height, colorscheme, font_type=FONT_BUILT_IN):
+        super().__init__(name, x, y, width, height, colorscheme)
         self.value     = ""
         self.font_file = font_type
 
@@ -198,11 +197,10 @@ class IconWidget(Widget):
     def set_icon_index(self, idx=0):
         self.tg[0] = idx
 
-"""
-This widget draws some graphics
-"""
 class GraphicsWidget(Widget):
-
+    """
+    This widget draws some graphics
+    """
     def __init__(self, name, x, y, width, height):
         super().__init__(name, x, y, width, height)
         self.graphics = None

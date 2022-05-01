@@ -9,86 +9,34 @@
 from widget import *
 from colorscheme import *
 from pygamedisplay import PygameDisplay
-
 import displayio
 from adafruit_bitmap_font import bitmap_font
 from adafruit_display_text import label
 from random import randint
 import math
 
-"""
-This is the base class for my GUI
-An instance represents the root window with the following properties:
-    * always located at 0, 0
-    * size is defined upon creation, and can be scaled up by integer increments
-    * has a colorscheme that is stored as a palette
-    * TODO has a border that can be turned on or off
-"""
-class UniGui(displayio.Group):
 
-    def __init__(self, width, height, scale=1, colorscheme=Solarized.light):
-        super().__init__(scale=scale)
-        self.x             = 0
-        self.y             = 0
-        self.width         = width
-        self.height        = height
-        self.palette       = colorscheme
-        self.palette.make_transparent(ColorScheme.indices['TRANSPARENT'])
-        self.widgets       = []
-        self.background_bm = None
-        self.background_tg = None
+class UniGui(Widget):
+    """
+    This is the base class for my GUI
+    An instance represents the root window with the following properties:
+        * always located at 0, 0
+        * size is defined upon creation, and can be scaled up by integer increments
+        * has a colorscheme that is stored as a palette
+        * TODO has a border that can be turned on or off
+    """
+    def __init__(self, width, height, colorscheme, scale=1):
+        super().__init__(
+            "UniGui",
+            0,
+            0,
+            width,
+            height,
+            colorscheme,
+            scale=scale,
+        )
+        self.widgets = []
         self.set_background()
-
-    def set_background(self, bg_color_index=ColorScheme.indices['BASE']):
-        bg_bitmap = displayio.Bitmap(self.width, self.height, 8)
-        bg_bitmap.fill(bg_color_index)
-        self.background_bm = bg_bitmap
-        self.background_tg = displayio.TileGrid(bg_bitmap, pixel_shader=self.palette)
-        self.append(self.background_tg)
-
-    # returns the tuple: (index, tilegrid) or None
-    def get_background_tilegrid(self):
-        try:
-            idx = self.index(self.background_tg)
-            return (idx, self.pop(idx))
-        except:
-            print("Tried to get non-existant background tilegrid!")
-            return None
-
-    def border_on(self, color_idx=ColorScheme.indices['BASE_HIGHLIGHT']):
-        bm = self.background_bm
-        # get the index of the background tilegrid.
-        # Don't care about the tg itself because we're making a new one
-        (tg_index, _) = self.get_background_tilegrid()
-        for x in range(0, bm.width):
-            bm[x, 0]           = color_idx
-            bm[x, bm.height-1] = color_idx
-        for y in range(0, bm.height):
-            bm[0, y]          = color_idx
-            bm[bm.width-1, y] = color_idx
-        self.background_tg = displayio.TileGrid(bm, pixel_shader=self.palette)
-        self.insert(tg_index, self.background_tg)
-
-    def border_off(self):
-        bm = self.background_bm
-        # get the index of the background tilegrid.
-        # Don't care about the tg itself because we're making a new one
-        (tg_index, _) = self.get_background_tilegrid()
-        # Fill with the base color index
-        bm.fill(ColorScheme.indices['BASE'])
-        self.background_tg = displayio.TileGrid(bm, pixel_shader=self.palette)
-        self.insert(tg_index, self.background_tg)
-
-    # TODO: clean this up so we modify existing group, not add another
-    def set_icon(self):
-        icon = displayio.OnDiskBitmap('images/256x32/color_blocks.bmp')
-        # icon_tg = displayio.TileGrid(icon, pixel_shader=icon.pixel_shader, width=1, height=1, tile_width=32, tile_height=32)
-        for i in range(6):
-            icon_tg = displayio.TileGrid(icon, pixel_shader=icon.pixel_shader, width=1, height=1, tile_width=32, tile_height=32)
-            icon_tg[0] = randint(0, 5)
-            icon_tg.x = 32*i
-            icon_tg.y = 32
-            self.append(icon_tg)
 
     def add_widget(self, widget):
         # TODO: first validate the layout?
