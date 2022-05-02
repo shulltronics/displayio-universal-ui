@@ -23,7 +23,7 @@ toolbar_widget = TextWidget(
     0,
     WIDTH,
     32,
-    font_type=TextWidget.LARGE_FONT,
+    font_path=TextWidget.LARGE_FONT,
     colorscheme=CS,
 )
 toolbar_widget.border_on()
@@ -50,7 +50,7 @@ message_widget = TextWidget(
     32,
     round(WIDTH/2),
     HEIGHT-128-32,
-    font_type=TextWidget.SMALL_FONT,
+    font_path=TextWidget.SMALL_FONT,
     colorscheme=CS,
 )
 message_widget.border_on()
@@ -63,7 +63,7 @@ button = TextWidget(
     32,
     round(WIDTH/2),
     HEIGHT-128-32,
-    font_type=TextWidget.SMALL_FONT,
+    font_path=TextWidget.SMALL_FONT,
     colorscheme=CS,
 )
 button.border_on()

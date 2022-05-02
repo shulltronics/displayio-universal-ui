@@ -106,19 +106,19 @@ class TextWidget(Widget):
         TODO: Add padding 
         TODO: ability to wrap, cutoff, or scroll long text
     """
-    small_font_path = resource_filename('unigui', 'fonts/6x12.bdf')
-    SMALL_FONT = bitmap_font.load_font(small_font_path)
+    SMALL_FONT = resource_filename('unigui', 'fonts/6x12.bdf')
                  #"fonts/VCROSDMono-14.bdf"
-    large_font_path = resource_filename('unigui', 'fonts/fipps-12pt.bdf')
-    LARGE_FONT = bitmap_font.load_font(large_font_path)
+    LARGE_FONT = resource_filename('unigui', 'fonts/fipps-12pt.bdf')
                  #"fonts/SNES-Italic-24.bdf"
                  #"fonts/Silom-Bold-24.bdf"
-    FONT_BUILT_IN = terminalio.FONT
 
-    def __init__(self, name, x, y, width, height, colorscheme, font=FONT_BUILT_IN):
+    def __init__(self, name, x, y, width, height, colorscheme, font_path=None):
         super().__init__(name, x, y, width, height, colorscheme)
         self.value = ""
-        self.font  = font
+        if font_path:
+            self.font = bitmap_font.load_font(font_path)
+        else:
+            self.font = terminalio.FONT
         self.color = self.palette[ColorScheme.indices['TEXT']]
         self.label = label.Label(self.font, text=self.value, background=None, color=self.color)
         self.append(self.label)

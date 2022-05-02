@@ -136,7 +136,8 @@ tree.set_click_action(tree.click_action)
 
 # Create the display and update it
 display = PygameDisplay(WIDTH*SCALE_FACTOR, HEIGHT*SCALE_FACTOR)
-gui.update(display)
+# gui.update(display)
+display.show(gui)
 
 # Main loop
 start_time = time.time()
