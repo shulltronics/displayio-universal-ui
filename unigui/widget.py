@@ -112,9 +112,6 @@ class TextWidget(Widget):
         super().__init__(name, x, y, width, height, colorscheme)
         self.value     = ""
         self.font_file = font_type
-
-    def init(self):
-        super().init()
         self.color = self.palette[ColorScheme.indices['TEXT']]
         if self.font_file:
             font = bitmap_font.load_font(self.font_file)
@@ -123,6 +120,10 @@ class TextWidget(Widget):
         self.label = label.Label(font, text=self.value, background=self.palette[1], color=self.color)
         self.append(self.label)
 
+
+    def init(self):
+        pass
+        
     def get_label(self):
         try:
             idx = self.index(self.label)
@@ -171,18 +172,17 @@ class TextWidget(Widget):
 class IconWidget(Widget):
 
     def __init__(self, name, x, y, width=32, height=32):
-        super().__init__(name, x, y, width, height)
-    
-    def init(self):
+        self.icon_path = "unigui/images/128x32/px_icons.bmp"
         self.bm, self.icon_palette = adafruit_imageload.load(
-            "unigui/images/128x32/px_icons.bmp",
+            self.icon_path,
             bitmap=displayio.Bitmap,
             palette=displayio.Palette,
         )
+        super().__init__(name, x, y, width, height, colorscheme=self.icon_palette)
         # Setup the icon palette to the color we want, making index 0 transparent
         # Be sure when creating icons to make the background color be index 0
         self.icon_palette.make_transparent(0)
-        self.icon_palette[1] = self.palette[ColorScheme.indices['COLOR_0']]
+        # self.icon_palette[1] = self.palette[ColorScheme.indices['COLOR_2']]
         self.tg = displayio.TileGrid(
             self.bm,
             pixel_shader=self.icon_palette,
@@ -193,6 +193,10 @@ class IconWidget(Widget):
             default_tile=2,
         )
         self.append(self.tg)
+        
+    
+    def init(self):
+        pass
 
     def set_icon_index(self, idx=0):
         self.tg[0] = idx
@@ -201,8 +205,8 @@ class GraphicsWidget(Widget):
     """
     This widget draws some graphics
     """
-    def __init__(self, name, x, y, width, height):
-        super().__init__(name, x, y, width, height)
+    def __init__(self, name, x, y, width, height, colorscheme):
+        super().__init__(name, x, y, width, height, colorscheme)
         self.graphics = None
 
     def get_graphics_group(self):

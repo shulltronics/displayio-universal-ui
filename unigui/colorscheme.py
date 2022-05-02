@@ -3,7 +3,7 @@ import displayio
 """
 A ColorScheme is a palette of size 8
 """
-class ColorScheme():
+class ColorScheme(displayio.Palette):
     indices = {
         'TRANSPARENT':    0,
         'BASE':           1,
