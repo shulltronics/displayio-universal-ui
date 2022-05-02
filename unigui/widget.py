@@ -1,3 +1,4 @@
+from pkg_resources import resource_filename
 import displayio
 import terminalio
 from adafruit_bitmap_font import bitmap_font
@@ -26,6 +27,7 @@ class Widget(displayio.Group):
         self.name          = name
         self.palette       = colorscheme
         self.palette.make_transparent(0)
+        self.bg_transparent = False
         self.x             = x
         self.y             = y
         self.width         = width
@@ -44,7 +46,10 @@ class Widget(displayio.Group):
 
     def set_background(self, bg_color_index=ColorScheme.indices['BASE']):
         bg_bitmap = displayio.Bitmap(self.width, self.height, 8)
-        bg_bitmap.fill(bg_color_index)
+        if self.bg_transparent:
+            bg_bitmap.fill(0)
+        else:
+            bg_bitmap.fill(bg_color_index)
         self.background_bm = bg_bitmap
         self.background_tg = displayio.TileGrid(bg_bitmap, pixel_shader=self.palette)
         self.append(self.background_tg)
@@ -101,29 +106,26 @@ class TextWidget(Widget):
         TODO: Add padding 
         TODO: ability to wrap, cutoff, or scroll long text
     """
-    SMALL_FONT = "unigui/fonts/6x12.bdf"
+    small_font_path = resource_filename('unigui', 'fonts/6x12.bdf')
+    SMALL_FONT = bitmap_font.load_font(small_font_path)
                  #"fonts/VCROSDMono-14.bdf"
-    LARGE_FONT = "unigui/fonts/fipps-12pt.bdf"
+    large_font_path = resource_filename('unigui', 'fonts/fipps-12pt.bdf')
+    LARGE_FONT = bitmap_font.load_font(large_font_path)
                  #"fonts/SNES-Italic-24.bdf"
                  #"fonts/Silom-Bold-24.bdf"
-    FONT_BUILT_IN = None
+    FONT_BUILT_IN = terminalio.FONT
 
-    def __init__(self, name, x, y, width, height, colorscheme, font_type=FONT_BUILT_IN):
+    def __init__(self, name, x, y, width, height, colorscheme, font=FONT_BUILT_IN):
         super().__init__(name, x, y, width, height, colorscheme)
-        self.value     = ""
-        self.font_file = font_type
+        self.value = ""
+        self.font  = font
         self.color = self.palette[ColorScheme.indices['TEXT']]
-        if self.font_file:
-            font = bitmap_font.load_font(self.font_file)
-        else:
-            font = terminalio.FONT
-        self.label = label.Label(font, text=self.value, background=self.palette[1], color=self.color)
+        self.label = label.Label(self.font, text=self.value, background=None, color=self.color)
         self.append(self.label)
-
 
     def init(self):
         pass
-        
+
     def get_label(self):
         try:
             idx = self.index(self.label)

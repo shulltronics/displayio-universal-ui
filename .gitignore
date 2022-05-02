@@ -7,3 +7,4 @@ unigui/*.egg-info
 
 examples/__pycache__/
 examples/test*
+examples/assets
