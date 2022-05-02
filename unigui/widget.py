@@ -171,18 +171,19 @@ class TextWidget(Widget):
 
 class IconWidget(Widget):
 
-    def __init__(self, name, x, y, width=32, height=32):
+    def __init__(self, name, x, y, width, height, colorscheme):
         self.icon_path = "unigui/images/128x32/px_icons.bmp"
         self.bm, self.icon_palette = adafruit_imageload.load(
             self.icon_path,
             bitmap=displayio.Bitmap,
             palette=displayio.Palette,
         )
-        super().__init__(name, x, y, width, height, colorscheme=self.icon_palette)
+        # print("icon palette length is ", self.icon_palette.__len__())
+        super().__init__(name, x, y, width, height, colorscheme=colorscheme)
         # Setup the icon palette to the color we want, making index 0 transparent
         # Be sure when creating icons to make the background color be index 0
         self.icon_palette.make_transparent(0)
-        # self.icon_palette[1] = self.palette[ColorScheme.indices['COLOR_2']]
+        self.icon_palette[1] = self.palette[ColorScheme.indices['COLOR_2']]
         self.tg = displayio.TileGrid(
             self.bm,
             pixel_shader=self.icon_palette,

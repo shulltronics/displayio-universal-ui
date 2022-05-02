@@ -36,7 +36,9 @@ icon = IconWidget(
     "icon",
     WIDTH-32,
     0,
-    # colorscheme=None
+    32,
+    32,
+    colorscheme=CS
 )
 # icon.border_off()
 gui.add_widget(icon)

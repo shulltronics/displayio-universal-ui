@@ -1,5 +1,6 @@
 import displayio
 from unigui import UniGui, GraphicsWidget, IconWidget, TextWidget, Widget, PygameDisplay
+from unigui import Solarized
 from adafruit_display_shapes.line import Line
 import time
 import math
@@ -77,13 +78,13 @@ class Branch():
 
 
 class TreeWidget(Widget):
-    def __init__(self, name, x, y, width, height):
-        super().__init__(name, x, y, width, height)
+    def __init__(self, name, x, y, width, height, colorscheme):
+        super().__init__(name, x, y, width, height, colorscheme)
         self.gfx = None
+        self.regrow()
 
     def init(self):
-        super().init()
-        self.regrow()
+        pass
 
     def regrow(self):
         div = 2.5 + (randint(0, 100) / 100)
@@ -111,23 +112,24 @@ class TreeWidget(Widget):
 WIDTH = 320
 HEIGHT = 240
 SCALE_FACTOR = 2
+CS = Solarized.dark
 # The main UniGui object
-gui = UniGui(WIDTH, HEIGHT, scale=SCALE_FACTOR)
+gui = UniGui(WIDTH, HEIGHT, scale=SCALE_FACTOR, colorscheme=CS)
 
 # create our title area:
-title = TextWidget("toolbar", 0, HEIGHT-32, round(WIDTH/2), 32)
+title = TextWidget("toolbar", 0, HEIGHT-32, round(WIDTH/2), 32, colorscheme=CS)
 gui.add_widget(title)
 title.border_on()
 title.set_value("Tree Growth Simulation", h_justification="left")
 
 # create a seconds counter:
-timer = TextWidget("timer", round(WIDTH/2), HEIGHT-32, round(WIDTH/2), 32)
+timer = TextWidget("timer", round(WIDTH/2), HEIGHT-32, round(WIDTH/2), 32, colorscheme=CS)
 gui.add_widget(timer)
 timer.border_on()
 timer.set_value("0", h_justification="right")
 
 # Create the main simulation window
-tree = TreeWidget("tree", 0, 0, WIDTH, HEIGHT-32)
+tree = TreeWidget("tree", 0, 0, WIDTH, HEIGHT-32, colorscheme=CS)
 gui.add_widget(tree)
 tree.border_on()
 tree.set_click_action(tree.click_action)
