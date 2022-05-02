@@ -33,7 +33,7 @@ class Widget(displayio.Group):
         self.width         = width
         self.height        = height
         self.border        = False
-        self.background_bm = None   # this is the background bitmap
+        self.background_bm = None
         self.background_tg = None
         # by default a widget doesn't do anything when clicked
         self.clickable     = False
@@ -41,8 +41,21 @@ class Widget(displayio.Group):
         self.callback      = None
         self.set_background()
 
-    def init(self):
-        pass
+    def get_background_tilegrid(self):
+        """
+        Return the tuple (index, TileGrid) that represents the widget's background.
+        If the TileGrid already exists in the widget, it pops and returns that one,
+        otherwise it creates and returns it without appending it to the group.
+        """
+        try:
+            idx = self.index(self.background_tg)
+            return (idx, self.pop(idx))
+        except:
+            print("Creating background tilegrid...")
+            bg_bitmap = displayio.Bitmap(self.width, self.height, 8)
+            self.background_bm = bg_bitmap
+            self.background_tg = displayio.TileGrid(bg_bitmap, pixel_shader=self.palette)
+            return (0, self.background_tg)
 
     def set_bg_transparent(self, trans):
         """ Sets the transparency of the widget's background (True or False). """
@@ -62,23 +75,10 @@ class Widget(displayio.Group):
         self.background_tg = new_tg
         self.insert(tg_idx, self.background_tg)
 
-    def get_background_tilegrid(self):
-        """
-        Return the tuple (index, TileGrid) that represents the widget's background.
-        If the TileGrid already exists in the widget, it pops and returns that one,
-        otherwise it creates and returns it without appending it to the group.
-        """
-        try:
-            idx = self.index(self.background_tg)
-            return (idx, self.pop(idx))
-        except:
-            print("Creating background tilegrid...")
-            bg_bitmap = displayio.Bitmap(self.width, self.height, 8)
-            self.background_bm = bg_bitmap
-            self.background_tg = displayio.TileGrid(bg_bitmap, pixel_shader=self.palette)
-            return (0, self.background_tg)
-
     def border_on(self, color_idx=ColorScheme.indices['BASE_HIGHLIGHT']):
+        """
+        Draw a 1px wide border around the widget.
+        """
         self.border = True
         bm = self.background_bm
         # get the index of the background tilegrid.
@@ -94,6 +94,9 @@ class Widget(displayio.Group):
         self.insert(tg_index, self.background_tg)
 
     def border_off(self):
+        """
+        Clear the border around the widget.
+        """
         self.border = False
         bm = self.background_bm
         # get the index of the background tilegrid.
@@ -138,9 +141,6 @@ class TextWidget(Widget):
         self.label = label.Label(self.font, text=self.value, background=None, color=self.color)
         self.append(self.label)
 
-    def init(self):
-        pass
-
     def get_label(self):
         try:
             idx = self.index(self.label)
@@ -149,8 +149,10 @@ class TextWidget(Widget):
             print("Tried to get non-existant text label!")
             return None
 
-    # sets the text to display
     def set_value(self, value, h_justification='center', v_justification='center'):
+        """
+        Set the text that the widget should display.
+        """
         if self.value == value:
             return
         (label_idx, label) = self.get_label()
@@ -182,9 +184,12 @@ class TextWidget(Widget):
             self.insert(label_idx, label)
 
     # sets the text color
-    def set_color(self, color):
-        self.color = color
-        self.label.color = color
+    def set_color(self, color_idx=ColorScheme.indices['TEXT']):
+        """
+        Set the text color using an index into the colorscheme
+        """
+        self.color = self.palette[color_idx]
+        self.label.color = self.color
 
 class IconWidget(Widget):
 
@@ -211,10 +216,6 @@ class IconWidget(Widget):
             default_tile=2,
         )
         self.append(self.tg)
-        
-    
-    def init(self):
-        pass
 
     def set_icon_index(self, idx=0):
         self.tg[0] = idx
@@ -259,5 +260,3 @@ class GraphicsWidget(Widget):
         else:
             self.graphics = triangle
             self.append(self.graphics)
-        # circle = Circle(offset_x, offset_y, r, fill=None, outline=self.palette[7])
-        # self.graphics.append(circle)

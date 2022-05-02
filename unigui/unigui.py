@@ -44,7 +44,6 @@ class UniGui(Widget):
         # If we didn't override the widget's colorscheme, set it here
         if widget.palette is None:
             widget.palette = self.palette
-        widget.init()
         self.widgets.append(widget)
         self.append(widget)
 
