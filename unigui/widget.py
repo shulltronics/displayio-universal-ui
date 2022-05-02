@@ -44,24 +44,39 @@ class Widget(displayio.Group):
     def init(self):
         pass
 
-    def set_background(self, bg_color_index=ColorScheme.indices['BASE']):
-        bg_bitmap = displayio.Bitmap(self.width, self.height, 8)
-        if self.bg_transparent:
-            bg_bitmap.fill(0)
-        else:
-            bg_bitmap.fill(bg_color_index)
-        self.background_bm = bg_bitmap
-        self.background_tg = displayio.TileGrid(bg_bitmap, pixel_shader=self.palette)
-        self.append(self.background_tg)
+    def set_bg_transparent(self, trans):
+        """ Sets the transparency of the widget's background (True or False). """
+        self.bg_transparent = trans
+        self.set_background()
 
-    # returns the tuple: (index, tilegrid) or None
+    def set_background(self, bg_color_index=ColorScheme.indices['BASE']):
+        """
+        Set the background to the specified colorscheme index.
+        """
+        (tg_idx, tg) = self.get_background_tilegrid()   # Get the bg TileGrid
+        if self.bg_transparent:
+            self.background_bm.fill(0)
+        else:
+            self.background_bm.fill(bg_color_index)
+        new_tg = displayio.TileGrid(self.background_bm, pixel_shader=self.palette)
+        self.background_tg = new_tg
+        self.insert(tg_idx, self.background_tg)
+
     def get_background_tilegrid(self):
+        """
+        Return the tuple (index, TileGrid) that represents the widget's background.
+        If the TileGrid already exists in the widget, it pops and returns that one,
+        otherwise it creates and returns it without appending it to the group.
+        """
         try:
             idx = self.index(self.background_tg)
             return (idx, self.pop(idx))
         except:
-            print("Tried to get non-existant background tilegrid!")
-            return None
+            print("Creating background tilegrid...")
+            bg_bitmap = displayio.Bitmap(self.width, self.height, 8)
+            self.background_bm = bg_bitmap
+            self.background_tg = displayio.TileGrid(bg_bitmap, pixel_shader=self.palette)
+            return (0, self.background_tg)
 
     def border_on(self, color_idx=ColorScheme.indices['BASE_HIGHLIGHT']):
         self.border = True
