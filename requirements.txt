@@ -1,10 +1,9 @@
--e ./Adafruit_Blinka
+adafruit_blinka
 adafruit_blinka_displayio
 adafruit_circuitpython_display_text
 adafruit_circuitpython_bitmap_font
 adafruit_circuitpython_display_shapes
 adafruit_circuitpython_imageload
 pygame
-
 # Install this package too, so we can run examples
 -e .
