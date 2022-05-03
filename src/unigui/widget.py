@@ -1,4 +1,4 @@
-from pkg_resources import resource_filename
+from unigui.colorscheme import *
 import displayio
 import terminalio
 from adafruit_bitmap_font import bitmap_font
@@ -9,7 +9,7 @@ from adafruit_display_shapes.triangle import Triangle
 from adafruit_display_shapes.circle import Circle
 import math
 from random import randint
-from colorscheme import *
+from pkg_resources import resource_filename
 
 class Widget(displayio.Group):
     """
@@ -193,8 +193,10 @@ class TextWidget(Widget):
 
 class IconWidget(Widget):
 
+    ICON_BUILTIN = resource_filename('unigui', 'images/128x32/px_icons.bmp')
+
     def __init__(self, name, x, y, width, height, colorscheme):
-        self.icon_path = "unigui/images/128x32/px_icons.bmp"
+        self.icon_path = self.ICON_BUILTIN
         self.bm, self.icon_palette = adafruit_imageload.load(
             self.icon_path,
             bitmap=displayio.Bitmap,

@@ -1,0 +1,4 @@
+include src/unigui/fonts/*
+include src/unigui/images/32x32/*
+include src/unigui/images/128x32/*
+include src/unigui/images/256x32/*

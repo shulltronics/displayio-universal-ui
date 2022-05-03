@@ -1,5 +1,6 @@
-from unigui import UniGui, TextWidget, PygameDisplay
-from unigui import VSCode, Solarized
+from unigui.unigui import UniGui, TextWidget
+from unigui.pygamedisplay import PygameDisplay
+from unigui.colorscheme import VSCode, Solarized
 import time
 
 # Configuration constants

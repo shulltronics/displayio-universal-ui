@@ -3,7 +3,7 @@
 __pycache__/
 dist/
 
-unigui/*.egg-info
+src/unigui/*.egg-info
 
 examples/__pycache__/
 examples/test*

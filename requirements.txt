@@ -6,4 +6,4 @@ adafruit_circuitpython_display_shapes
 adafruit_circuitpython_imageload
 pygame
 # Install this package too, so we can run examples
--e .
+.

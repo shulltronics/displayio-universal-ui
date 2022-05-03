@@ -1,8 +1,8 @@
 ### An attempt to get Blinka Displayio working on Generic x86 PC
 
-import time
-from unigui import PygameDisplay
+from unigui.pygamedisplay import PygameDisplay
 from gui import gui, WIDTH, HEIGHT, SCALE_FACTOR
+import time
 
 print("starting...")
 

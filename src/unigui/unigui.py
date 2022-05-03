@@ -6,9 +6,8 @@
 # Raspberry Pi or Microcontroller, use appropriate display_bus and Display
 
 # These will be re-exported to our package namespace
-from widget import *
-from colorscheme import *
-from pygamedisplay import PygameDisplay
+from unigui.widget import *
+from unigui.colorscheme import *
 import displayio
 from adafruit_bitmap_font import bitmap_font
 from adafruit_display_text import label
