@@ -1,6 +1,8 @@
 import displayio
-from unigui import UniGui, GraphicsWidget, IconWidget, TextWidget, Widget, PygameDisplay
-from unigui import Solarized
+from unigui import UniGui
+from unigui.widget import GraphicsWidget, IconWidget, TextWidget, Widget
+from unigui.pygamedisplay import PygameDisplay
+from unigui.colorscheme import Solarized, VSCode
 from adafruit_display_shapes.line import Line
 import time
 import math
@@ -112,7 +114,7 @@ class TreeWidget(Widget):
 WIDTH = 320
 HEIGHT = 240
 SCALE_FACTOR = 2
-CS = Solarized.dark
+CS = VSCode.dark
 # The main UniGui object
 gui = UniGui(WIDTH, HEIGHT, scale=SCALE_FACTOR, colorscheme=CS)
 

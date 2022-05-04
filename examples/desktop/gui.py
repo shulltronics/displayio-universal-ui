@@ -1,4 +1,4 @@
-from unigui.unigui import UniGui
+from unigui import UniGui
 from unigui.widget import IconWidget, Widget, TextWidget, GraphicsWidget
 from unigui.colorscheme import Solarized, VSCode, Shulltronics
 import time

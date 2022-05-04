@@ -1,4 +1,4 @@
-from unigui.unigui import UniGui, TextWidget
+from unigui import UniGui, TextWidget
 from unigui.pygamedisplay import PygameDisplay
 from unigui.colorscheme import VSCode, Solarized
 import time

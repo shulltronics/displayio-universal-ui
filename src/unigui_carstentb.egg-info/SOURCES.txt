@@ -7,7 +7,6 @@ setup.py
 src/unigui/__init__.py
 src/unigui/colorscheme.py
 src/unigui/pygamedisplay.py
-src/unigui/unigui.py
 src/unigui/widget.py
 src/unigui/fonts/04b30-75.bdf
 src/unigui/fonts/4x6.bdf
@@ -19,7 +18,6 @@ src/unigui/fonts/Silom-Bold-24.bdf
 src/unigui/fonts/VCROSDMono-14.bdf
 src/unigui/fonts/fipps-12pt.bdf
 src/unigui/fonts/pzim3x5-5.bdf
-src/unigui/images/video-card-32.bmp
 src/unigui/images/128x32/px_icons.bmp
 src/unigui/images/256x32/color_blocks.bmp
 src/unigui/images/32x32/blue.bmp

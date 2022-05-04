@@ -2,8 +2,8 @@
 
 __pycache__/
 dist/
-
-src/unigui/*.egg-info
+build/
+src/unigui/unigui_carstentb.egg-info/
 
 examples/__pycache__/
 examples/test*
