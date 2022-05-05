@@ -9,7 +9,8 @@ from adafruit_display_shapes.triangle import Triangle
 from adafruit_display_shapes.circle import Circle
 import math
 from random import randint
-from pkg_resources import resource_filename
+# TODO: See if I can get this functionality working with CircuitPython
+# from pkg_resources import resource_filename
 
 class Widget(displayio.Group):
     """
@@ -124,9 +125,11 @@ class TextWidget(Widget):
         TODO: Add padding 
         TODO: ability to wrap, cutoff, or scroll long text
     """
-    SMALL_FONT = resource_filename('unigui', 'fonts/6x12.bdf')
+
+    # TODO: See if I can get this functionality working with CircuitPython
+    # SMALL_FONT = resource_filename('unigui', 'fonts/6x12.bdf')
                  #"fonts/VCROSDMono-14.bdf"
-    LARGE_FONT = resource_filename('unigui', 'fonts/fipps-12pt.bdf')
+    # LARGE_FONT = resource_filename('unigui', 'fonts/fipps-12pt.bdf')
                  #"fonts/SNES-Italic-24.bdf"
                  #"fonts/Silom-Bold-24.bdf"
 
@@ -193,7 +196,8 @@ class TextWidget(Widget):
 
 class IconWidget(Widget):
 
-    ICON_BUILTIN = resource_filename('unigui', 'images/128x32/px_icons.bmp')
+    # TODO: See if I can get this functionality working with CircuitPython
+    # ICON_BUILTIN = resource_filename('unigui', 'images/128x32/px_icons.bmp')
 
     def __init__(self, name, x, y, width, height, colorscheme):
         self.icon_path = self.ICON_BUILTIN
