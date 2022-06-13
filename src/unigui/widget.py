@@ -7,6 +7,7 @@ import adafruit_imageload
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_shapes.triangle import Triangle
 from adafruit_display_shapes.circle import Circle
+from adafruit_display_shapes.line import Line
 import math
 from random import randint
 # TODO: See if I can get this functionality working with CircuitPython
@@ -266,3 +267,62 @@ class GraphicsWidget(Widget):
         else:
             self.graphics = triangle
             self.append(self.graphics)
+
+class GraphWidget(Widget):
+    """
+    A Widget that displays a value vs time plot
+        TODO: Everything
+        TODO: Need a way to set the x and y scales,
+            i.e. map the range of values to the available screen real estate
+    """
+
+    def __init__(self, name, x, y, width, height, colorscheme):
+        super().__init__(name, x, y, width, height, colorscheme)
+        self.padding = 5
+        self.values = []
+        self.x_scale = 4    # Units: pixels per second
+        self.y_scale = 0.25 # Units: pixels per whole number
+    
+    def draw(self):
+        """
+        Draw the x and y axes
+        """
+        x_axis = Line(
+            0,
+            self.height - self.padding,
+            self.width,
+            self.height - self.padding,
+            color=self.palette[ColorScheme.indices['COLOR_1']]
+        )
+        y_axis = Line(
+            self.padding,
+            0,
+            self.padding,
+            self.height,
+            color=self.palette[ColorScheme.indices['COLOR_1']]
+        )
+        self.append(x_axis)
+        self.append(y_axis)
+
+    def _scale_value(self, value):
+        """
+        TODO: Private method to scale an (x, y) value to an (x, y) location on the chart
+        """
+        (t, v) = value
+        return (round(t*self.x_scale), round(v*self.y_scale))
+
+
+    def add_value(self, value):
+        """
+        Add an (x, y) value to the graph and plot it
+        """
+        self.values.append(value)
+        (x, y) = self._scale_value(value)
+        point = Circle(
+            x,
+            y,
+            r=3, # TODO: Scale this to match the widget size
+            fill=None,
+            outline=self.palette[ColorScheme.indices['COLOR_0']],
+        )
+        self.append(point)
