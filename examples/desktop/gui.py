@@ -24,8 +24,8 @@ toolbar_widget = TextWidget(
     0,
     WIDTH,
     32,
-    font_path=TextWidget.LARGE_FONT,
     colorscheme=CS,
+    font_path='fonts/fipps-12pt.bdf',
 )
 toolbar_widget.border_on()
 toolbar_widget.set_click_action(toolbar_widget.border_toggle)
@@ -33,16 +33,16 @@ toolbar_widget.set_value(str(time.strftime("%H:%M:%S")))
 gui.add_widget(toolbar_widget)
 
 
-icon = IconWidget(
-    "icon",
-    WIDTH-32,
-    0,
-    32,
-    32,
-    colorscheme=CS
-)
-# icon.border_off()
-gui.add_widget(icon)
+# icon = IconWidget(
+#     "icon",
+#     WIDTH-32,
+#     0,
+#     32,
+#     32,
+#     colorscheme=CS
+# )
+# # icon.border_off()
+# gui.add_widget(icon)
 
 # Setup a messages widget that writes text to a predefined area
 message_widget = TextWidget(
@@ -51,7 +51,7 @@ message_widget = TextWidget(
     32,
     round(WIDTH/2),
     HEIGHT-128-32,
-    font_path=TextWidget.SMALL_FONT,
+    font_path='fonts/4x6.bdf',
     colorscheme=CS,
 )
 message_widget.border_on()
@@ -64,7 +64,7 @@ button = TextWidget(
     32,
     round(WIDTH/2),
     HEIGHT-128-32,
-    font_path=TextWidget.SMALL_FONT,
+    font_path='fonts/4x6.bdf',
     colorscheme=CS,
 )
 button.border_on()

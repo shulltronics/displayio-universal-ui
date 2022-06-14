@@ -11,8 +11,8 @@ toolbar = gui.get_widget("toolbar")
 msgs = gui.get_widget("messages")
 graphics = gui.get_widget("graphics")
 button = gui.get_widget("button")
-icon = gui.get_widget("icon")
-icon.set_click_action(display.quit)
+# icon = gui.get_widget("icon")
+# icon.set_click_action(display.quit)
 
 gui.update(display)
 
