@@ -272,17 +272,39 @@ class GraphWidget(Widget):
     """
     A Widget that displays a value vs time plot
         TODO: Everything
-        TODO: Need a way to set the x and y scales,
-            i.e. map the range of values to the available screen real estate
+        TODO: Set the x and y scales based on the expected min and max values.
+              > map the range of values to the available screen real estate
+              > place the axes accordingly
     """
 
-    def __init__(self, name, x, y, width, height, colorscheme):
+    def __init__(self, name, x, y, width, height, colorscheme, font_path=None):
         super().__init__(name, x, y, width, height, colorscheme)
-        self.padding = 5
+        self.padding = 8
         self.values = []
-        self.x_scale = 4    # Units: pixels per second
-        self.y_scale = 0.25 # Units: pixels per whole number
+        # Setup the min and max x and y values to sane defaults.
+        # These can (and should) be changed using the provided method.
+        self.x_min   = 0
+        self.x_max   = 60   # Default x span is 1 minute
+        self.x_scale = (self.width-self.padding)/(self.x_max-self.x_min)  # Units: pixels per second
+        self.y_min = 0
+        self.y_max = 100    # Default y span is 100 units
+        self.y_scale = (self.height-self.padding)/(self.y_max-self.y_min) # Units: pixels per unit
+        if font_path:
+            self.font = bitmap_font.load_font(font_path)
+        else:
+            self.font = terminalio.FONT
     
+    def set_x_range(self, x_min, x_max):
+        print("setting x range")
+        self.x_min = x_min
+        self.x_max = x_max
+        self.x_scale = (self.width-self.padding)/(self.x_max-self.x_min)
+
+    def set_y_range(self, y_min, y_max):
+        self.y_min = y_min
+        self.y_max = y_max
+        self.y_scale = (self.height-self.padding)/(self.y_max-self.y_min) # Units: pixels per whole number
+
     def draw(self):
         """
         Draw the x and y axes
@@ -294,6 +316,9 @@ class GraphWidget(Widget):
             self.height - self.padding,
             color=self.palette[ColorScheme.indices['COLOR_1']]
         )
+        x_label = label.Label(self.font, text="x axis", background=None, color=self.palette[ColorScheme.indices['COLOR_1']])
+        x_label.anchor_point = (0.0, 1.0)
+        x_label.anchored_position = (round(self.width/2), self.height)
         y_axis = Line(
             self.padding,
             0,
@@ -302,22 +327,24 @@ class GraphWidget(Widget):
             color=self.palette[ColorScheme.indices['COLOR_1']]
         )
         self.append(x_axis)
+        self.append(x_label)
         self.append(y_axis)
 
-    def _scale_value(self, value):
+    def _value_to_pixel(self, value):
         """
-        TODO: Private method to scale an (x, y) value to an (x, y) location on the chart
+        Convert a (time, value) tuple to an (x, y) pixel location in the widget
         """
         (t, v) = value
-        return (round(t*self.x_scale), round(v*self.y_scale))
-
+        x = round(t*self.x_scale + self.padding)
+        y = round(self.height - self.padding - v*self.y_scale)
+        return (x, y)
 
     def add_value(self, value):
         """
         Add an (x, y) value to the graph and plot it
         """
         self.values.append(value)
-        (x, y) = self._scale_value(value)
+        (x, y) = self._value_to_pixel(value)
         point = Circle(
             x,
             y,
