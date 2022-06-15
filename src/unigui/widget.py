@@ -10,7 +10,21 @@ from adafruit_display_shapes.circle import Circle
 import math
 from random import randint
 # TODO: See if I can get this functionality working with CircuitPython
-# from pkg_resources import resource_filename
+try:
+    from pkg_resources import resource_filename
+except ImportError:
+    print("Couln't import pkg_resources...\n\
+               Defining custom resource_filename function.")
+    import sys
+    def resource_filename(module_name, resource_relative_path):
+        module_path = sys.modules[module_name].__file__
+        dir_tree = module_path.split('/')
+        resource_path = '/'
+        for dir in dir_tree[0:-1]:
+            if len(dir) > 0:
+                resource_path += (dir + '/')
+        resource_path += resource_relative_path
+        return resource_path
 
 class Widget(displayio.Group):
     """
@@ -127,9 +141,9 @@ class TextWidget(Widget):
     """
 
     # TODO: See if I can get this functionality working with CircuitPython
-    # SMALL_FONT = resource_filename('unigui', 'fonts/6x12.bdf')
+    SMALL_FONT = resource_filename('unigui', 'fonts/4x6.bdf')
                  #"fonts/VCROSDMono-14.bdf"
-    # LARGE_FONT = resource_filename('unigui', 'fonts/fipps-12pt.bdf')
+    LARGE_FONT = resource_filename('unigui', 'fonts/fipps-12pt.bdf')
                  #"fonts/SNES-Italic-24.bdf"
                  #"fonts/Silom-Bold-24.bdf"
 
@@ -197,7 +211,7 @@ class TextWidget(Widget):
 class IconWidget(Widget):
 
     # TODO: See if I can get this functionality working with CircuitPython
-    # ICON_BUILTIN = resource_filename('unigui', 'images/128x32/px_icons.bmp')
+    ICON_BUILTIN = resource_filename('unigui', 'images/128x32/px_icons.bmp')
 
     def __init__(self, name, x, y, width, height, colorscheme):
         self.icon_path = self.ICON_BUILTIN
