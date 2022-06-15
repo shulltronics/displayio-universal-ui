@@ -10,20 +10,20 @@ from adafruit_display_shapes.circle import Circle
 import math
 from random import randint
 # TODO: See if I can get this functionality working with CircuitPython
+import os
 try:
-    from pkg_resources import resource_filename
+    from importlib.resources import files
 except ImportError:
-    print("Couln't import pkg_resources...\n\
-               Defining custom resource_filename function.")
+    print("Couln't import importlib.resources... must be on CircuitPython!\nDefining custom files function.")
     import sys
-    def resource_filename(module_name, resource_relative_path):
+    def files(module_name):
+        sep = os.sep
         module_path = sys.modules[module_name].__file__
-        dir_tree = module_path.split('/')
-        resource_path = '/'
+        dir_tree = module_path.split(sep)
+        resource_path = sep
         for dir in dir_tree[0:-1]:
             if len(dir) > 0:
-                resource_path += (dir + '/')
-        resource_path += resource_relative_path
+                resource_path += (dir + sep)
         return resource_path
 
 class Widget(displayio.Group):
@@ -141,9 +141,9 @@ class TextWidget(Widget):
     """
 
     # TODO: See if I can get this functionality working with CircuitPython
-    SMALL_FONT = resource_filename('unigui', 'fonts/4x6.bdf')
+    SMALL_FONT = str(files('unigui')) + os.sep.join(['', 'fonts', '4x6.bdf'])
                  #"fonts/VCROSDMono-14.bdf"
-    LARGE_FONT = resource_filename('unigui', 'fonts/fipps-12pt.bdf')
+    LARGE_FONT = str(files('unigui')) + os.sep.join(['', 'fonts', 'fipps-12pt.bdf'])
                  #"fonts/SNES-Italic-24.bdf"
                  #"fonts/Silom-Bold-24.bdf"
 
@@ -211,7 +211,7 @@ class TextWidget(Widget):
 class IconWidget(Widget):
 
     # TODO: See if I can get this functionality working with CircuitPython
-    ICON_BUILTIN = resource_filename('unigui', 'images/128x32/px_icons.bmp')
+    ICON_BUILTIN = str(files('unigui')) + os.sep.join(['', 'images', '128x32', 'px_icons.bmp'])
 
     def __init__(self, name, x, y, width, height, colorscheme):
         self.icon_path = self.ICON_BUILTIN
