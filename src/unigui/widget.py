@@ -138,24 +138,23 @@ class TextWidget(Widget):
     A Widget that displays a string nicely
         TODO: Add padding 
         TODO: ability to wrap, cutoff, or scroll long text
+        TODO: Make sure the same font isn't being loaded more than once.
+              Allow one loaded font to be used at different scales
     """
 
     # TODO: See if I can get this functionality working with CircuitPython
-    SMALL_FONT = str(files('unigui')) + os.sep.join(['', 'fonts', '4x6.bdf'])
-                 #"fonts/VCROSDMono-14.bdf"
-    LARGE_FONT = str(files('unigui')) + os.sep.join(['', 'fonts', 'fipps-12pt.bdf'])
-                 #"fonts/SNES-Italic-24.bdf"
-                 #"fonts/Silom-Bold-24.bdf"
+    SMALL_FONT = str(files('unigui')) + os.sep.join(['', 'fonts', 'ctrld-fixed-13r.bdf'])
+    LARGE_FONT = str(files('unigui')) + os.sep.join(['', 'fonts', 'Gomme10x20n.bdf'])
 
     def __init__(self, name, x, y, width, height, colorscheme, font_path=None):
         super().__init__(name, x, y, width, height, colorscheme)
         self.value = ""
-        if font_path:
+        if font_path is self.LARGE_FONT:
             self.font = bitmap_font.load_font(font_path)
         else:
             self.font = terminalio.FONT
         self.color = self.palette[ColorScheme.indices['TEXT']]
-        self.label = label.Label(self.font, text=self.value, background=None, color=self.color)
+        self.label = label.Label(self.font, text=self.value, background=None, color=self.color, scale=self._scale)
         self.append(self.label)
 
     def get_label(self):
