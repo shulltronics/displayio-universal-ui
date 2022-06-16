@@ -3,8 +3,8 @@ from unigui.widget import IconWidget, Widget, TextWidget, GraphicsWidget
 from unigui.colorscheme import Solarized, VSCode, Shulltronics
 import time
 
-# Configuration constants
-WIDTH = 640
+# Configuration constants -- same size as HyperPixel 4.0 :)
+WIDTH = 800
 HEIGHT = 480
 SCALE_FACTOR = 2
 CS = VSCode.dark

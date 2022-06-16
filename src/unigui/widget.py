@@ -11,7 +11,21 @@ from adafruit_display_shapes.line import Line
 import math
 from random import randint
 # TODO: See if I can get this functionality working with CircuitPython
-# from pkg_resources import resource_filename
+import os
+try:
+    from importlib.resources import files
+except ImportError:
+    print("Couln't import importlib.resources... must be on CircuitPython!\nDefining custom files function.")
+    import sys
+    def files(module_name):
+        sep = os.sep
+        module_path = sys.modules[module_name].__file__
+        dir_tree = module_path.split(sep)
+        resource_path = sep
+        for dir in dir_tree[0:-1]:
+            if len(dir) > 0:
+                resource_path += (dir + sep)
+        return resource_path
 
 class Widget(displayio.Group):
     """
@@ -125,24 +139,23 @@ class TextWidget(Widget):
     A Widget that displays a string nicely
         TODO: Add padding 
         TODO: ability to wrap, cutoff, or scroll long text
+        TODO: Make sure the same font isn't being loaded more than once.
+              Allow one loaded font to be used at different scales
     """
 
     # TODO: See if I can get this functionality working with CircuitPython
-    # SMALL_FONT = resource_filename('unigui', 'fonts/6x12.bdf')
-                 #"fonts/VCROSDMono-14.bdf"
-    # LARGE_FONT = resource_filename('unigui', 'fonts/fipps-12pt.bdf')
-                 #"fonts/SNES-Italic-24.bdf"
-                 #"fonts/Silom-Bold-24.bdf"
+    SMALL_FONT = str(files('unigui')) + os.sep.join(['', 'fonts', 'ctrld-fixed-13r.bdf'])
+    LARGE_FONT = str(files('unigui')) + os.sep.join(['', 'fonts', 'Gomme10x20n.bdf'])
 
     def __init__(self, name, x, y, width, height, colorscheme, font_path=None):
         super().__init__(name, x, y, width, height, colorscheme)
         self.value = ""
-        if font_path:
+        if font_path is self.LARGE_FONT:
             self.font = bitmap_font.load_font(font_path)
         else:
             self.font = terminalio.FONT
         self.color = self.palette[ColorScheme.indices['TEXT']]
-        self.label = label.Label(self.font, text=self.value, background=None, color=self.color)
+        self.label = label.Label(self.font, text=self.value, background=None, color=self.color, scale=self._scale)
         self.append(self.label)
 
     def get_label(self):
@@ -198,7 +211,7 @@ class TextWidget(Widget):
 class IconWidget(Widget):
 
     # TODO: See if I can get this functionality working with CircuitPython
-    # ICON_BUILTIN = resource_filename('unigui', 'images/128x32/px_icons.bmp')
+    ICON_BUILTIN = str(files('unigui')) + os.sep.join(['', 'images', '128x32', 'px_icons.bmp'])
 
     def __init__(self, name, x, y, width, height, colorscheme):
         self.icon_path = self.ICON_BUILTIN
