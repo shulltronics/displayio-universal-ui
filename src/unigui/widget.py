@@ -54,6 +54,7 @@ class Widget(displayio.Group):
         self.clickable     = False
         # the callback function should take the click location tuple (xpos, ypos) as an argument
         self.callback      = None
+        self._scale        = scale
         self.set_background()
 
     def get_background_tilegrid(self):
