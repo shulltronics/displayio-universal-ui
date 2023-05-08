@@ -6,7 +6,7 @@ import time
 # Configuration constants -- same size as HyperPixel 4.0 :)
 WIDTH = 800
 HEIGHT = 480
-SCALE_FACTOR = 2
+SCALE_FACTOR = 1
 CS = VSCode.dark
 
 # The main UniGui object

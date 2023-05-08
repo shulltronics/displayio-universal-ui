@@ -1,5 +1,7 @@
 adafruit_blinka
-adafruit_blinka_displayio
+# adafruit_blinka_displayio
+-e ../Adafruit_Blinka_Displayio
+-e .
 adafruit_circuitpython_display_text
 adafruit_circuitpython_bitmap_font
 adafruit_circuitpython_display_shapes

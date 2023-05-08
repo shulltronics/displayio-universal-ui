@@ -1,5 +1,9 @@
 # A class to use PyGame window as a "display"
 
+# methods that are overidden are:
+#   refresh
+#   _refresh_display_area
+
 import sys
 import time
 from PIL import Image
